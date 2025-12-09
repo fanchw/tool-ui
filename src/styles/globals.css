@@ -57,6 +57,17 @@
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
+  
+  /* 主题切换动画 */
+  html {
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  * {
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;
+  }
 }
 
 @layer utilities {

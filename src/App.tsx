@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { useThemeStore } from '@/store/useThemeStore';
+import { ErrorBoundary } from '@/components/common';
 import AppRouter from './router';
 
 function App() {
@@ -17,20 +18,22 @@ function App() {
   }, [theme]);
 
   return (
-    <BrowserRouter>
-      <AppRouter />
-      <Toaster
-        position="top-center"
-        toastOptions={{
-          duration: 3000,
-          style: {
-            background: 'hsl(var(--background))',
-            color: 'hsl(var(--foreground))',
-            border: '1px solid hsl(var(--border))',
-          },
-        }}
-      />
-    </BrowserRouter>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <AppRouter />
+        <Toaster
+          position="top-center"
+          toastOptions={{
+            duration: 3000,
+            style: {
+              background: 'hsl(var(--background))',
+              color: 'hsl(var(--foreground))',
+              border: '1px solid hsl(var(--border))',
+            },
+          }}
+        />
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 }
 
