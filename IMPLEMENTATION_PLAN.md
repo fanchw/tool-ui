@@ -14,20 +14,20 @@
 #### 1.1 项目初始化
 **时间**: 1 天  
 **任务清单**:
-- [ ] 使用 Vite 创建 React + TypeScript 项目
+- [x] 使用 Vite 创建 React + TypeScript 项目
   ```bash
   npm create vite@latest tool-ui -- --template react-ts
   cd tool-ui
   npm install
   ```
-- [ ] 初始化 Git 仓库
+- [x] 初始化 Git 仓库
   ```bash
   git init
   git add .
   git commit -m "chore: initial commit"
   ```
-- [ ] 创建 `.gitignore` 文件
-- [ ] 设置项目基本信息（package.json）
+- [x] 创建 `.gitignore` 文件
+- [x] 设置项目基本信息（package.json）
 
 **验收标准**:
 - ✅ 项目可以正常启动
@@ -37,12 +37,12 @@
 #### 1.2 开发环境配置
 **时间**: 1 天  
 **任务清单**:
-- [ ] 安装和配置 ESLint
+- [x] 安装和配置 ESLint
   ```bash
   npm install -D eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin
   npm install -D eslint-plugin-react-hooks eslint-plugin-react-refresh
   ```
-- [ ] 安装和配置 Prettier
+- [x] 安装和配置 Prettier
   ```bash
   npm install -D prettier
   ```
@@ -58,17 +58,17 @@
 #### 1.3 UI 框架集成
 **时间**: 2 天  
 **任务清单**:
-- [ ] 安装 Tailwind CSS
+- [x] 安装 Tailwind CSS
   ```bash
   npm install -D tailwindcss postcss autoprefixer
   npx tailwindcss init -p
   ```
-- [ ] 配置 Tailwind CSS
-- [ ] 初始化 shadcn/ui
+- [x] 配置 Tailwind CSS
+- [x] 初始化 shadcn/ui
   ```bash
   npx shadcn-ui@latest init
   ```
-- [ ] 安装基础 UI 组件
+- [x] 安装基础 UI 组件（Button、Input、Card）
   ```bash
   npx shadcn-ui@latest add button
   npx shadcn-ui@latest add input
@@ -79,11 +79,11 @@
   npx shadcn-ui@latest add switch
   npx shadcn-ui@latest add tooltip
   ```
-- [ ] 安装图标库
+- [x] 安装图标库
   ```bash
   npm install lucide-react
   ```
-- [ ] 配置全局样式
+- [x] 配置全局样式
 
 **验收标准**:
 - ✅ Tailwind CSS 正常工作
@@ -93,18 +93,18 @@
 #### 1.4 路由和状态管理
 **时间**: 1 天  
 **任务清单**:
-- [ ] 安装 React Router
+- [x] 安装 React Router
   ```bash
   npm install react-router-dom
   ```
-- [ ] 配置路由系统
-- [ ] 创建基础页面组件
-- [ ] 安装 Zustand
+- [x] 配置路由系统
+- [x] 创建基础页面组件
+- [x] 安装 Zustand
   ```bash
   npm install zustand
   ```
-- [ ] 创建主题状态管理
-- [ ] 创建历史记录状态管理
+- [x] 创建主题状态管理
+- [x] 创建历史记录状态管理
 
 **验收标准**:
 - ✅ 路由可以正常切换
@@ -114,11 +114,11 @@
 #### 1.5 项目结构搭建
 **时间**: 1 天  
 **任务清单**:
-- [ ] 创建目录结构
-- [ ] 创建基础组件文件
-- [ ] 配置路径别名（@/）
-- [ ] 创建类型定义文件
-- [ ] 创建工具函数文件
+- [x] 创建目录结构
+- [x] 创建基础组件文件
+- [x] 配置路径别名（@/）
+- [x] 创建类型定义文件
+- [x] 创建工具函数文件
 
 **验收标准**:
 - ✅ 目录结构清晰
@@ -132,20 +132,20 @@
 #### 2.1 布局组件开发
 **时间**: 2 天  
 **任务清单**:
-- [ ] 创建 Header 组件
+- [x] 创建 Header 组件
   - Logo
   - 导航菜单
   - 主题切换按钮
   - GitHub 链接
-- [ ] 创建 Sidebar 组件
+- [x] 创建 Sidebar 组件
   - 工具分类
   - 工具列表
   - 搜索功能
   - 折叠/展开功能
-- [ ] 创建 Footer 组件
+- [x] 创建 Footer 组件
   - 版权信息
   - 链接
-- [ ] 创建 Layout 组件
+- [x] 创建 Layout 组件
   - 整合 Header、Sidebar、Footer
   - 响应式布局
 
