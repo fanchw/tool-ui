@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
-import Layout from '@/components/layout/Layout';
+import { Layout } from '@/components/layout/Layout';
 
 // 懒加载页面组件
 const Home = lazy(() => import('@/pages/Home'));
