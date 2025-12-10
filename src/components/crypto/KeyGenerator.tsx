@@ -46,11 +46,17 @@ export function KeyGenerator({ onKeyGenerated, defaultKeyLength = 128 }: KeyGene
       setGeneratedKey(key);
       setShowKey(true);
       
+      // 自动复制到剪贴板
+      navigator.clipboard.writeText(key).then(() => {
+        toast.success(`已生成 ${keyLength}-bit ${keyFormat.toUpperCase()} 格式密钥并复制到剪贴板`);
+      }).catch(() => {
+        toast.success(`已生成 ${keyLength}-bit ${keyFormat.toUpperCase()} 格式密钥`);
+      });
+      
+      // 调用回调但不关闭对话框
       if (onKeyGenerated) {
         onKeyGenerated(key);
       }
-      
-      toast.success(`已生成 ${keyLength}-bit ${keyFormat.toUpperCase()} 格式密钥`);
     } catch (error) {
       toast.error('密钥生成失败');
       console.error('Key generation error:', error);
