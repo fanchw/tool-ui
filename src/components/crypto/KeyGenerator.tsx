@@ -53,10 +53,7 @@ export function KeyGenerator({ onKeyGenerated, defaultKeyLength = 128 }: KeyGene
         toast.success(`已生成 ${keyLength}-bit ${keyFormat.toUpperCase()} 格式密钥`);
       });
       
-      // 调用回调但不关闭对话框
-      if (onKeyGenerated) {
-        onKeyGenerated(key);
-      }
+      // 不自动调用回调，让用户手动点击"应用此密钥"按钮
     } catch (error) {
       toast.error('密钥生成失败');
       console.error('Key generation error:', error);

@@ -102,16 +102,14 @@ export default function CryptoPage() {
     }
   };
 
-  // 处理加密密钥生成
+  // 处理加密密钥应用（用户点击"应用此密钥"按钮时）
   const handleEncryptKeyGenerated = (key: string) => {
     setEncryptKey(key);
-    // 不自动关闭Dialog，让用户手动关闭
   };
 
-  // 处理解密密钥生成
+  // 处理解密密钥应用（用户点击"应用此密钥"按钮时）
   const handleDecryptKeyGenerated = (key: string) => {
     setDecryptKey(key);
-    // 不自动关闭Dialog，让用户手动关闭
   };
 
   // 清空加密
