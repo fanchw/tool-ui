@@ -24,15 +24,20 @@ export default function CryptoPage() {
   const [encryptKey, setEncryptKey] = useState('');
   const [encryptOutput, setEncryptOutput] = useState('');
   const [showEncryptKey, setShowEncryptKey] = useState(false);
+  const [showEncryptKeyGenerator, setShowEncryptKeyGenerator] = useState(false);
 
   // AES 解密
   const [decryptInput, setDecryptInput] = useState('');
   const [decryptKey, setDecryptKey] = useState('');
   const [decryptOutput, setDecryptOutput] = useState('');
   const [showDecryptKey, setShowDecryptKey] = useState(false);
+  const [showDecryptKeyGenerator, setShowDecryptKeyGenerator] = useState(false);
 
   // 当前 AES tab
   const [aesTab, setAesTab] = useState<'encrypt' | 'decrypt'>('encrypt');
+
+  // 密钥长度选项（bit）
+  const keyLengthOptions = [64, 128, 192, 256, 512, 1024, 2048, 4096];
 
   // 哈希
   const [hashInput, setHashInput] = useState('');
@@ -93,17 +98,21 @@ export default function CryptoPage() {
   };
 
   // 生成随机密钥（加密）
-  const handleGenerateEncryptKey = () => {
-    const key = CryptoJS.lib.WordArray.random(16).toString();
+  const handleGenerateEncryptKey = (bits: number) => {
+    const bytes = bits / 8;
+    const key = CryptoJS.lib.WordArray.random(bytes).toString();
     setEncryptKey(key);
-    toast.success('密钥生成成功');
+    setShowEncryptKeyGenerator(false);
+    toast.success(`已生成 ${bits}-bit 密钥`);
   };
 
   // 生成随机密钥（解密）
-  const handleGenerateDecryptKey = () => {
-    const key = CryptoJS.lib.WordArray.random(16).toString();
+  const handleGenerateDecryptKey = (bits: number) => {
+    const bytes = bits / 8;
+    const key = CryptoJS.lib.WordArray.random(bytes).toString();
     setDecryptKey(key);
-    toast.success('密钥生成成功');
+    setShowDecryptKeyGenerator(false);
+    toast.success(`已生成 ${bits}-bit 密钥`);
   };
 
   // 清空加密
@@ -263,7 +272,11 @@ export default function CryptoPage() {
                     <Lock className="h-4 w-4" />
                     加密
                   </Button>
-                  <Button onClick={handleGenerateEncryptKey} variant="outline" className="gap-2">
+                  <Button
+                    onClick={() => setShowEncryptKeyGenerator(!showEncryptKeyGenerator)}
+                    variant="outline"
+                    className="gap-2"
+                  >
                     <Key className="h-4 w-4" />
                     生成密钥
                   </Button>
@@ -276,6 +289,26 @@ export default function CryptoPage() {
                     示例
                   </Button>
                 </div>
+
+                {/* 密钥长度选择器 */}
+                {showEncryptKeyGenerator && (
+                  <div className="mt-4 p-4 border rounded-lg bg-muted/30">
+                    <h4 className="text-sm font-semibold mb-3">选择密钥长度</h4>
+                    <div className="grid grid-cols-4 gap-2">
+                      {keyLengthOptions.map((bits) => (
+                        <Button
+                          key={bits}
+                          onClick={() => handleGenerateEncryptKey(bits)}
+                          variant="secondary"
+                          size="sm"
+                          className="font-mono"
+                        >
+                          {bits}-bit
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </Card>
 
               {/* 密钥输入 */}
@@ -355,7 +388,11 @@ export default function CryptoPage() {
                     <Unlock className="h-4 w-4" />
                     解密
                   </Button>
-                  <Button onClick={handleGenerateDecryptKey} variant="outline" className="gap-2">
+                  <Button
+                    onClick={() => setShowDecryptKeyGenerator(!showDecryptKeyGenerator)}
+                    variant="outline"
+                    className="gap-2"
+                  >
                     <Key className="h-4 w-4" />
                     生成密钥
                   </Button>
@@ -368,6 +405,26 @@ export default function CryptoPage() {
                     示例
                   </Button>
                 </div>
+
+                {/* 密钥长度选择器 */}
+                {showDecryptKeyGenerator && (
+                  <div className="mt-4 p-4 border rounded-lg bg-muted/30">
+                    <h4 className="text-sm font-semibold mb-3">选择密钥长度</h4>
+                    <div className="grid grid-cols-4 gap-2">
+                      {keyLengthOptions.map((bits) => (
+                        <Button
+                          key={bits}
+                          onClick={() => handleGenerateDecryptKey(bits)}
+                          variant="secondary"
+                          size="sm"
+                          className="font-mono"
+                        >
+                          {bits}-bit
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </Card>
 
               {/* 密钥输入 */}
