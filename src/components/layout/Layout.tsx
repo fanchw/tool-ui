@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 
 export function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   return (
     <div className="relative min-h-screen flex flex-col">
@@ -15,9 +16,15 @@ export function Layout() {
 
       <div className="flex-1 flex">
         {/* Sidebar - Desktop */}
-        <aside className="hidden md:block w-64 border-r">
-          <div className="sticky top-14 h-[calc(100vh-3.5rem)] overflow-y-auto">
-            <Sidebar />
+        <aside className={cn(
+          "hidden md:block border-r transition-all duration-300",
+          sidebarCollapsed ? "w-16" : "w-64"
+        )}>
+          <div className="sticky top-14 h-[calc(100vh-3.5rem)]">
+            <Sidebar
+              collapsed={sidebarCollapsed}
+              onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
+            />
           </div>
         </aside>
 
