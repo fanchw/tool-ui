@@ -10,13 +10,20 @@ import toast from 'react-hot-toast';
 interface KeyGeneratorProps {
   onKeyGenerated?: (key: string) => void;
   defaultKeyLength?: number;
+  defaultKeyFormat?: 'hex' | 'base64';
+  onConfigChange?: (config: { keyLength: number; keyFormat: 'hex' | 'base64' }) => void;
 }
 
-export function KeyGenerator({ onKeyGenerated, defaultKeyLength = 128 }: KeyGeneratorProps) {
+export function KeyGenerator({
+  onKeyGenerated,
+  defaultKeyLength = 128,
+  defaultKeyFormat = 'hex',
+  onConfigChange
+}: KeyGeneratorProps) {
   const [generatedKey, setGeneratedKey] = useState('');
   const [keyLength, setKeyLength] = useState(defaultKeyLength);
   const [showKey, setShowKey] = useState(false);
-  const [keyFormat, setKeyFormat] = useState<'hex' | 'base64'>('hex');
+  const [keyFormat, setKeyFormat] = useState<'hex' | 'base64'>(defaultKeyFormat);
 
   // 密钥长度选项（bit）
   const keyLengthOptions = [
@@ -90,7 +97,10 @@ export function KeyGenerator({ onKeyGenerated, defaultKeyLength = 128 }: KeyGene
           {keyLengthOptions.map((option) => (
             <Button
               key={option.bits}
-              onClick={() => setKeyLength(option.bits)}
+              onClick={() => {
+                setKeyLength(option.bits);
+                onConfigChange?.({ keyLength: option.bits, keyFormat });
+              }}
               variant={keyLength === option.bits ? 'default' : 'outline'}
               size="sm"
               className="flex flex-col h-auto py-2 px-3"
@@ -107,7 +117,10 @@ export function KeyGenerator({ onKeyGenerated, defaultKeyLength = 128 }: KeyGene
         <label className="text-sm font-medium">输出格式</label>
         <div className="flex gap-2">
           <Button
-            onClick={() => setKeyFormat('hex')}
+            onClick={() => {
+              setKeyFormat('hex');
+              onConfigChange?.({ keyLength, keyFormat: 'hex' });
+            }}
             variant={keyFormat === 'hex' ? 'default' : 'outline'}
             size="sm"
             className="flex-1"
@@ -115,7 +128,10 @@ export function KeyGenerator({ onKeyGenerated, defaultKeyLength = 128 }: KeyGene
             HEX (十六进制)
           </Button>
           <Button
-            onClick={() => setKeyFormat('base64')}
+            onClick={() => {
+              setKeyFormat('base64');
+              onConfigChange?.({ keyLength, keyFormat: 'base64' });
+            }}
             variant={keyFormat === 'base64' ? 'default' : 'outline'}
             size="sm"
             className="flex-1"

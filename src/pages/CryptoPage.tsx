@@ -44,6 +44,12 @@ export default function CryptoPage() {
   // 当前 AES tab
   const [aesTab, setAesTab] = useState<'encrypt' | 'decrypt'>('encrypt');
 
+  // 密钥生成器配置状态（在页面刷新前保持）
+  const [keyGeneratorConfig, setKeyGeneratorConfig] = useState({
+    keyLength: 128,
+    keyFormat: 'hex' as 'hex' | 'base64',
+  });
+
   // 哈希
   const [hashInput, setHashInput] = useState('');
   const [hashResults, setHashResults] = useState<Record<string, string>>({});
@@ -297,7 +303,12 @@ export default function CryptoPage() {
                       生成安全的随机密钥用于AES加密
                     </DialogDescription>
                   </DialogHeader>
-                  <KeyGenerator onKeyGenerated={handleEncryptKeyGenerated} />
+                  <KeyGenerator
+                    onKeyGenerated={handleEncryptKeyGenerated}
+                    defaultKeyLength={keyGeneratorConfig.keyLength}
+                    defaultKeyFormat={keyGeneratorConfig.keyFormat}
+                    onConfigChange={setKeyGeneratorConfig}
+                  />
                 </DialogContent>
               </Dialog>
 
@@ -406,7 +417,12 @@ export default function CryptoPage() {
                       生成安全的随机密钥用于AES解密
                     </DialogDescription>
                   </DialogHeader>
-                  <KeyGenerator onKeyGenerated={handleDecryptKeyGenerated} />
+                  <KeyGenerator
+                    onKeyGenerated={handleDecryptKeyGenerated}
+                    defaultKeyLength={keyGeneratorConfig.keyLength}
+                    defaultKeyFormat={keyGeneratorConfig.keyFormat}
+                    onConfigChange={setKeyGeneratorConfig}
+                  />
                 </DialogContent>
               </Dialog>
 
