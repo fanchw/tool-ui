@@ -123,11 +123,11 @@ export function Sidebar({ className }: SidebarProps) {
       <div className="space-y-4 py-4">
         {/* 搜索框 */}
         <div className="px-3 py-2">
-          <div className="relative">
-            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+          <div className="relative group">
+            <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground transition-colors group-focus-within:text-primary" />
             <Input
               placeholder="搜索工具..."
-              className="pl-8"
+              className="pl-10 h-11 border-2 focus:border-primary/50 transition-all bg-card/50 backdrop-blur"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -135,23 +135,23 @@ export function Sidebar({ className }: SidebarProps) {
         </div>
 
         {/* 工具分类列表 */}
-        <div className="px-3">
+        <div className="px-3 space-y-3">
           {filteredCategories.map((category) => (
-            <div key={category.name} className="mb-4">
+            <div key={category.name} className="space-y-2">
               <button
                 onClick={() => toggleCategory(category.name)}
-                className="flex w-full items-center justify-between rounded-lg px-2 py-1.5 text-sm font-semibold hover:bg-accent"
+                className="flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-sm font-semibold hover:bg-primary/10 transition-all group bg-card/50 backdrop-blur border border-border/50"
               >
-                <span>{category.name}</span>
+                <span className="text-foreground group-hover:text-primary transition-colors">{category.name}</span>
                 {expandedCategories.includes(category.name) ? (
-                  <ChevronDown className="h-4 w-4" />
+                  <ChevronDown className="h-4 w-4 transition-transform group-hover:text-primary" />
                 ) : (
-                  <ChevronRight className="h-4 w-4" />
+                  <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:text-primary" />
                 )}
               </button>
 
               {expandedCategories.includes(category.name) && (
-                <div className="mt-1 space-y-1">
+                <div className="space-y-1.5 pl-2">
                   {category.tools.map((tool) => {
                     const isActive = location.pathname === tool.path;
                     return (
@@ -159,19 +159,34 @@ export function Sidebar({ className }: SidebarProps) {
                         key={tool.path}
                         to={tool.path}
                         className={cn(
-                          'flex items-start gap-3 rounded-lg px-3 py-2 text-sm transition-colors',
+                          'flex items-start gap-3 rounded-xl px-3 py-3 text-sm transition-all group relative overflow-hidden',
                           isActive
-                            ? 'bg-accent text-accent-foreground'
-                            : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+                            ? 'bg-gradient-to-r from-primary/20 to-primary/10 text-foreground shadow-sm border-l-2 border-primary'
+                            : 'text-muted-foreground hover:bg-card/80 hover:text-foreground hover:shadow-sm backdrop-blur border border-transparent hover:border-border/50'
                         )}
                       >
-                        <div className="mt-0.5">{tool.icon}</div>
-                        <div className="flex-1">
-                          <div className="font-medium">{tool.name}</div>
-                          <div className="text-xs text-muted-foreground">
+                        <div className={cn(
+                          "mt-0.5 p-1.5 rounded-lg transition-all",
+                          isActive
+                            ? "bg-primary/20 text-primary"
+                            : "bg-muted/50 group-hover:bg-primary/10 group-hover:text-primary"
+                        )}>
+                          {tool.icon}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className={cn(
+                            "font-medium transition-colors",
+                            isActive ? "text-foreground" : "group-hover:text-foreground"
+                          )}>
+                            {tool.name}
+                          </div>
+                          <div className="text-xs text-muted-foreground line-clamp-1">
                             {tool.description}
                           </div>
                         </div>
+                        {isActive && (
+                          <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent pointer-events-none" />
+                        )}
                       </Link>
                     );
                   })}
@@ -181,8 +196,9 @@ export function Sidebar({ className }: SidebarProps) {
           ))}
 
           {filteredCategories.length === 0 && (
-            <div className="px-2 py-4 text-center text-sm text-muted-foreground">
-              未找到匹配的工具
+            <div className="px-2 py-8 text-center">
+              <div className="text-muted-foreground text-sm mb-2">未找到匹配的工具</div>
+              <div className="text-xs text-muted-foreground/60">尝试使用其他关键词搜索</div>
             </div>
           )}
         </div>

@@ -67,8 +67,8 @@ export function KeyGenerator({
     }
   };
 
-  // 复制密钥
-  const handleCopyKey = () => {
+  // 复制密钥（备用方法，当前使用CopyButton组件）
+  const handleCopyKey = () => { // eslint-disable-line @typescript-eslint/no-unused-vars
     if (generatedKey) {
       navigator.clipboard.writeText(generatedKey);
       toast.success('密钥已复制到剪贴板');
