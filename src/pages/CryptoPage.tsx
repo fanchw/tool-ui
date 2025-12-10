@@ -58,6 +58,7 @@ export default function CryptoPage() {
   const [hmacInput, setHmacInput] = useState('');
   const [hmacKey, setHmacKey] = useState('');
   const [hmacResults, setHmacResults] = useState<Record<string, string>>({});
+  const [showHmacKeyGenerator, setShowHmacKeyGenerator] = useState(false);
 
   // AES 加密
   const handleAesEncrypt = () => {
@@ -116,6 +117,11 @@ export default function CryptoPage() {
   // 处理解密密钥应用（用户点击"应用此密钥"按钮时）
   const handleDecryptKeyGenerated = (key: string) => {
     setDecryptKey(key);
+  };
+
+  // 处理HMAC密钥应用（用户点击"应用此密钥"按钮时）
+  const handleHmacKeyGenerated = (key: string) => {
+    setHmacKey(key);
   };
 
   // 清空加密
@@ -558,6 +564,14 @@ export default function CryptoPage() {
                 <Key className="h-4 w-4" />
                 计算 HMAC
               </Button>
+              <Button
+                onClick={() => setShowHmacKeyGenerator(!showHmacKeyGenerator)}
+                variant="outline"
+                className="gap-2"
+              >
+                <Key className="h-4 w-4" />
+                生成密钥
+              </Button>
               <Button onClick={handleClearHmac} variant="ghost" className="gap-2">
                 <RotateCcw className="h-4 w-4" />
                 清空
@@ -569,15 +583,36 @@ export default function CryptoPage() {
             </div>
           </Card>
 
+          {/* HMAC密钥生成器 Dialog */}
+          <Dialog open={showHmacKeyGenerator} onOpenChange={setShowHmacKeyGenerator}>
+            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>密钥生成器 - HMAC</DialogTitle>
+                <DialogDescription>
+                  生成安全的随机密钥用于HMAC计算
+                </DialogDescription>
+              </DialogHeader>
+              <KeyGenerator
+                onKeyGenerated={handleHmacKeyGenerated}
+                defaultKeyLength={keyGeneratorConfig.keyLength}
+                defaultKeyFormat={keyGeneratorConfig.keyFormat}
+                onConfigChange={setKeyGeneratorConfig}
+              />
+            </DialogContent>
+          </Dialog>
+
           {/* 密钥输入 */}
           <Card className="p-4">
             <h3 className="font-semibold mb-3">密钥</h3>
-            <Input
-              value={hmacKey}
-              onChange={(e) => setHmacKey(e.target.value)}
-              placeholder="请输入密钥..."
-              className="font-mono"
-            />
+            <div className="flex gap-2">
+              <Input
+                value={hmacKey}
+                onChange={(e) => setHmacKey(e.target.value)}
+                placeholder="请输入密钥..."
+                className="font-mono flex-1"
+              />
+              <CopyButton text={hmacKey} />
+            </div>
           </Card>
 
           {/* 输入区 */}
