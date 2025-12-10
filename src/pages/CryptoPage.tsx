@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,28 +21,20 @@ import {
   RotateCcw,
   Wand2,
   Eye,
-  EyeOff
+  EyeOff,
+  ArrowLeftRight
 } from 'lucide-react';
 import CryptoJS from 'crypto-js';
 import toast from 'react-hot-toast';
 
 export default function CryptoPage() {
-  // AES 加密
-  const [encryptInput, setEncryptInput] = useState('');
-  const [encryptKey, setEncryptKey] = useState('');
-  const [encryptOutput, setEncryptOutput] = useState('');
-  const [showEncryptKey, setShowEncryptKey] = useState(false);
-  const [showEncryptKeyGenerator, setShowEncryptKeyGenerator] = useState(false);
-
-  // AES 解密
-  const [decryptInput, setDecryptInput] = useState('');
-  const [decryptKey, setDecryptKey] = useState('');
-  const [decryptOutput, setDecryptOutput] = useState('');
-  const [showDecryptKey, setShowDecryptKey] = useState(false);
-  const [showDecryptKeyGenerator, setShowDecryptKeyGenerator] = useState(false);
-
-  // 当前 AES tab
-  const [aesTab, setAesTab] = useState<'encrypt' | 'decrypt'>('encrypt');
+  // AES 加密解密统一状态
+  const [aesInput, setAesInput] = useState('');
+  const [aesKey, setAesKey] = useState('');
+  const [aesOutput, setAesOutput] = useState('');
+  const [showAesKey, setShowAesKey] = useState(false);
+  const [showAesKeyGenerator, setShowAesKeyGenerator] = useState(false);
+  const [liveConvertAes, setLiveConvertAes] = useState(false);
 
   // 密钥生成器配置状态（在页面刷新前保持）
   const [keyGeneratorConfig, setKeyGeneratorConfig] = useState({
@@ -60,20 +52,32 @@ export default function CryptoPage() {
   const [hmacResults, setHmacResults] = useState<Record<string, string>>({});
   const [showHmacKeyGenerator, setShowHmacKeyGenerator] = useState(false);
 
+  // AES 实时转换效果 - 加密
+  useEffect(() => {
+    if (liveConvertAes && aesInput && aesKey) {
+      try {
+        const encrypted = CryptoJS.AES.encrypt(aesInput, aesKey).toString();
+        setAesOutput(encrypted);
+      } catch (error) {
+        console.error('Auto encrypt error:', error);
+      }
+    }
+  }, [aesInput, aesKey, liveConvertAes]);
+
   // AES 加密
   const handleAesEncrypt = () => {
     try {
-      if (!encryptInput.trim()) {
+      if (!aesInput.trim()) {
         toast.error('请输入要加密的内容');
         return;
       }
-      if (!encryptKey.trim()) {
+      if (!aesKey.trim()) {
         toast.error('请输入密钥');
         return;
       }
 
-      const encrypted = CryptoJS.AES.encrypt(encryptInput, encryptKey).toString();
-      setEncryptOutput(encrypted);
+      const encrypted = CryptoJS.AES.encrypt(aesInput, aesKey).toString();
+      setAesOutput(encrypted);
       toast.success('加密成功');
     } catch (error) {
       toast.error('加密失败');
@@ -84,16 +88,16 @@ export default function CryptoPage() {
   // AES 解密
   const handleAesDecrypt = () => {
     try {
-      if (!decryptInput.trim()) {
+      if (!aesOutput.trim()) {
         toast.error('请输入要解密的内容');
         return;
       }
-      if (!decryptKey.trim()) {
+      if (!aesKey.trim()) {
         toast.error('请输入密钥');
         return;
       }
 
-      const decrypted = CryptoJS.AES.decrypt(decryptInput, decryptKey);
+      const decrypted = CryptoJS.AES.decrypt(aesOutput, aesKey);
       const plaintext = decrypted.toString(CryptoJS.enc.Utf8);
       
       if (!plaintext) {
@@ -101,7 +105,7 @@ export default function CryptoPage() {
         return;
       }
 
-      setDecryptOutput(plaintext);
+      setAesInput(plaintext);
       toast.success('解密成功');
     } catch (error) {
       toast.error('解密失败');
@@ -109,14 +113,9 @@ export default function CryptoPage() {
     }
   };
 
-  // 处理加密密钥应用（用户点击"应用此密钥"按钮时）
-  const handleEncryptKeyGenerated = (key: string) => {
-    setEncryptKey(key);
-  };
-
-  // 处理解密密钥应用（用户点击"应用此密钥"按钮时）
-  const handleDecryptKeyGenerated = (key: string) => {
-    setDecryptKey(key);
+  // 处理AES密钥应用（用户点击"应用此密钥"按钮时）
+  const handleAesKeyGenerated = (key: string) => {
+    setAesKey(key);
   };
 
   // 处理HMAC密钥应用（用户点击"应用此密钥"按钮时）
@@ -124,30 +123,17 @@ export default function CryptoPage() {
     setHmacKey(key);
   };
 
-  // 清空加密
-  const handleClearEncrypt = () => {
-    setEncryptInput('');
-    setEncryptKey('');
-    setEncryptOutput('');
+  // 清空AES
+  const handleClearAes = () => {
+    setAesInput('');
+    setAesKey('');
+    setAesOutput('');
   };
 
-  // 清空解密
-  const handleClearDecrypt = () => {
-    setDecryptInput('');
-    setDecryptKey('');
-    setDecryptOutput('');
-  };
-
-  // 加密示例
-  const handleEncryptExample = () => {
-    setEncryptInput('Hello, 这是一个加密示例！');
-    setEncryptKey('my-secret-key-123');
-  };
-
-  // 解密示例
-  const handleDecryptExample = () => {
-    setDecryptInput('U2FsdGVkX1+8xjnBHQyZpKMZqKqZqKqZqKqZ');
-    setDecryptKey('my-secret-key-123');
+  // AES示例
+  const handleAesExample = () => {
+    setAesInput('Hello, 这是一个加密示例！');
+    setAesKey('my-secret-key-123');
   };
 
   // 计算哈希
@@ -259,247 +245,147 @@ export default function CryptoPage() {
 
         {/* AES 加密解密 */}
         <TabsContent value="aes" className="space-y-4">
-          {/* 加密/解密切换 */}
-          <Tabs value={aesTab} onValueChange={(v) => setAesTab(v as 'encrypt' | 'decrypt')}>
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="encrypt" className="gap-2">
-                <Lock className="h-4 w-4" />
-                加密
-              </TabsTrigger>
-              <TabsTrigger value="decrypt" className="gap-2">
-                <Unlock className="h-4 w-4" />
-                解密
-              </TabsTrigger>
-            </TabsList>
-
-            {/* 加密 Tab */}
-            <TabsContent value="encrypt" className="space-y-4 mt-4">
-              {/* 工具栏 */}
-              <Card className="p-4">
-                <div className="flex flex-wrap gap-2">
-                  <Button onClick={handleAesEncrypt} className="gap-2">
-                    <Lock className="h-4 w-4" />
-                    加密
-                  </Button>
-                  <Button
-                    onClick={() => setShowEncryptKeyGenerator(!showEncryptKeyGenerator)}
-                    variant="outline"
-                    className="gap-2"
-                  >
-                    <Key className="h-4 w-4" />
-                    生成密钥
-                  </Button>
-                  <Button onClick={handleClearEncrypt} variant="ghost" className="gap-2">
-                    <RotateCcw className="h-4 w-4" />
-                    清空
-                  </Button>
-                  <Button onClick={handleEncryptExample} variant="ghost" className="gap-2">
-                    <Wand2 className="h-4 w-4" />
-                    示例
-                  </Button>
-                </div>
-              </Card>
-
-              {/* 加密密钥生成器 Dialog */}
-              <Dialog open={showEncryptKeyGenerator} onOpenChange={setShowEncryptKeyGenerator}>
-                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-                  <DialogHeader>
-                    <DialogTitle>密钥生成器 - 加密</DialogTitle>
-                    <DialogDescription>
-                      生成安全的随机密钥用于AES加密
-                    </DialogDescription>
-                  </DialogHeader>
-                  <KeyGenerator
-                    onKeyGenerated={handleEncryptKeyGenerated}
-                    defaultKeyLength={keyGeneratorConfig.keyLength}
-                    defaultKeyFormat={keyGeneratorConfig.keyFormat}
-                    onConfigChange={setKeyGeneratorConfig}
-                  />
-                </DialogContent>
-              </Dialog>
-
-              {/* 密钥输入 */}
-              <Card className="p-4">
-                <h3 className="font-semibold mb-3">密钥</h3>
-                <div className="flex gap-2">
-                  <Input
-                    value={encryptKey}
-                    onChange={(e) => setEncryptKey(e.target.value)}
-                    placeholder="请输入密钥..."
-                    className="font-mono flex-1"
-                    type={showEncryptKey ? 'text' : 'password'}
-                  />
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setShowEncryptKey(!showEncryptKey)}
-                    title={showEncryptKey ? '隐藏密钥' : '显示密钥'}
-                  >
-                    {showEncryptKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </Button>
-                  <CopyButton text={encryptKey} />
-                </div>
-                <p className="text-xs text-muted-foreground mt-2">
-                  提示：请妥善保管密钥，丢失后将无法解密
-                </p>
-              </Card>
-
-              {/* 输入输出区域 */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                {/* 输入区 */}
-                <Card className="p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="font-semibold">明文输入</h3>
-                    <span className="text-sm text-muted-foreground">
-                      {encryptInput.length} 字符
-                    </span>
-                  </div>
-                  <CodeEditor
-                    value={encryptInput}
-                    onChange={setEncryptInput}
-                    placeholder="请输入要加密的内容..."
-                    minHeight="400px"
-                    maxHeight="600px"
-                  />
-                </Card>
-
-                {/* 输出区 */}
-                <Card className="p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="font-semibold">密文输出</h3>
-                    <div className="flex gap-2">
-                      <span className="text-sm text-muted-foreground">
-                        {encryptOutput.length} 字符
-                      </span>
-                      {encryptOutput && <CopyButton text={encryptOutput} />}
-                    </div>
-                  </div>
-                  <CodeEditor
-                    value={encryptOutput}
-                    onChange={setEncryptOutput}
-                    placeholder="加密结果将显示在这里..."
-                    readOnly
-                    minHeight="400px"
-                    maxHeight="600px"
-                  />
-                </Card>
+          {/* 工具栏 */}
+          <Card className="p-4">
+            <div className="flex flex-wrap gap-4 items-center">
+              <div className="flex gap-2">
+                <Button
+                  onClick={() => setShowAesKeyGenerator(!showAesKeyGenerator)}
+                  variant="outline"
+                  className="gap-2"
+                >
+                  <Key className="h-4 w-4" />
+                  生成密钥
+                </Button>
+                <Button onClick={handleClearAes} variant="ghost" className="gap-2">
+                  <RotateCcw className="h-4 w-4" />
+                  清空
+                </Button>
+                <Button onClick={handleAesExample} variant="ghost" className="gap-2">
+                  <Wand2 className="h-4 w-4" />
+                  示例
+                </Button>
               </div>
-            </TabsContent>
-
-            {/* 解密 Tab */}
-            <TabsContent value="decrypt" className="space-y-4 mt-4">
-              {/* 工具栏 */}
-              <Card className="p-4">
-                <div className="flex flex-wrap gap-2">
-                  <Button onClick={handleAesDecrypt} className="gap-2">
-                    <Unlock className="h-4 w-4" />
-                    解密
-                  </Button>
-                  <Button
-                    onClick={() => setShowDecryptKeyGenerator(!showDecryptKeyGenerator)}
-                    variant="outline"
-                    className="gap-2"
-                  >
-                    <Key className="h-4 w-4" />
-                    生成密钥
-                  </Button>
-                  <Button onClick={handleClearDecrypt} variant="ghost" className="gap-2">
-                    <RotateCcw className="h-4 w-4" />
-                    清空
-                  </Button>
-                  <Button onClick={handleDecryptExample} variant="ghost" className="gap-2">
-                    <Wand2 className="h-4 w-4" />
-                    示例
-                  </Button>
-                </div>
-              </Card>
-
-              {/* 解密密钥生成器 Dialog */}
-              <Dialog open={showDecryptKeyGenerator} onOpenChange={setShowDecryptKeyGenerator}>
-                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-                  <DialogHeader>
-                    <DialogTitle>密钥生成器 - 解密</DialogTitle>
-                    <DialogDescription>
-                      生成安全的随机密钥用于AES解密
-                    </DialogDescription>
-                  </DialogHeader>
-                  <KeyGenerator
-                    onKeyGenerated={handleDecryptKeyGenerated}
-                    defaultKeyLength={keyGeneratorConfig.keyLength}
-                    defaultKeyFormat={keyGeneratorConfig.keyFormat}
-                    onConfigChange={setKeyGeneratorConfig}
-                  />
-                </DialogContent>
-              </Dialog>
-
-              {/* 密钥输入 */}
-              <Card className="p-4">
-                <h3 className="font-semibold mb-3">密钥</h3>
-                <div className="flex gap-2">
-                  <Input
-                    value={decryptKey}
-                    onChange={(e) => setDecryptKey(e.target.value)}
-                    placeholder="请输入密钥..."
-                    className="font-mono flex-1"
-                    type={showDecryptKey ? 'text' : 'password'}
-                  />
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setShowDecryptKey(!showDecryptKey)}
-                    title={showDecryptKey ? '隐藏密钥' : '显示密钥'}
-                  >
-                    {showDecryptKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </Button>
-                  <CopyButton text={decryptKey} />
-                </div>
-                <p className="text-xs text-muted-foreground mt-2">
-                  提示：请使用加密时的密钥进行解密
-                </p>
-              </Card>
-
-              {/* 输入输出区域 */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                {/* 输入区 */}
-                <Card className="p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="font-semibold">密文输入</h3>
-                    <span className="text-sm text-muted-foreground">
-                      {decryptInput.length} 字符
-                    </span>
-                  </div>
-                  <CodeEditor
-                    value={decryptInput}
-                    onChange={setDecryptInput}
-                    placeholder="请输入要解密的密文..."
-                    minHeight="400px"
-                    maxHeight="600px"
-                  />
-                </Card>
-
-                {/* 输出区 */}
-                <Card className="p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="font-semibold">明文输出</h3>
-                    <div className="flex gap-2">
-                      <span className="text-sm text-muted-foreground">
-                        {decryptOutput.length} 字符
-                      </span>
-                      {decryptOutput && <CopyButton text={decryptOutput} />}
-                    </div>
-                  </div>
-                  <CodeEditor
-                    value={decryptOutput}
-                    onChange={setDecryptOutput}
-                    placeholder="解密结果将显示在这里..."
-                    readOnly
-                    minHeight="400px"
-                    maxHeight="600px"
-                  />
-                </Card>
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="liveConvertAes"
+                  checked={liveConvertAes}
+                  onChange={(e) => setLiveConvertAes(e.target.checked)}
+                  className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary"
+                />
+                <label htmlFor="liveConvertAes" className="text-sm cursor-pointer">
+                  实时转换
+                </label>
               </div>
-            </TabsContent>
-          </Tabs>
+            </div>
+          </Card>
+
+          {/* AES密钥生成器 Dialog */}
+          <Dialog open={showAesKeyGenerator} onOpenChange={setShowAesKeyGenerator}>
+            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>密钥生成器 - AES</DialogTitle>
+                <DialogDescription>
+                  生成安全的随机密钥用于AES加密解密
+                </DialogDescription>
+              </DialogHeader>
+              <KeyGenerator
+                onKeyGenerated={handleAesKeyGenerated}
+                defaultKeyLength={keyGeneratorConfig.keyLength}
+                defaultKeyFormat={keyGeneratorConfig.keyFormat}
+                onConfigChange={setKeyGeneratorConfig}
+              />
+            </DialogContent>
+          </Dialog>
+
+          {/* 密钥输入 */}
+          <Card className="p-4">
+            <h3 className="font-semibold mb-3">密钥</h3>
+            <div className="flex gap-2">
+              <Input
+                value={aesKey}
+                onChange={(e) => setAesKey(e.target.value)}
+                placeholder="请输入密钥..."
+                className="font-mono flex-1"
+                type={showAesKey ? 'text' : 'password'}
+              />
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowAesKey(!showAesKey)}
+                title={showAesKey ? '隐藏密钥' : '显示密钥'}
+              >
+                {showAesKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </Button>
+              <CopyButton text={aesKey} />
+            </div>
+            <p className="text-xs text-muted-foreground mt-2">
+              提示：请妥善保管密钥，丢失后将无法解密
+            </p>
+          </Card>
+
+          {/* 输入输出区域 */}
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-4 items-start">
+            {/* 左侧：加密 */}
+            <Card className="p-4">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold">加密</h3>
+                <Button onClick={handleAesEncrypt} size="sm" className="gap-2">
+                  <Lock className="h-4 w-4" />
+                  加密
+                </Button>
+              </div>
+              <div className="mb-3">
+                <label className="text-sm font-medium mb-2 block">明文输入</label>
+                <div className="text-sm text-muted-foreground mb-2">
+                  {aesInput.length} 字符
+                </div>
+              </div>
+              <CodeEditor
+                value={aesInput}
+                onChange={setAesInput}
+                placeholder="请输入要加密的内容..."
+                minHeight="400px"
+                maxHeight="600px"
+              />
+            </Card>
+
+            {/* 中间箭头（仅视觉指示） */}
+            <div className="flex items-center justify-center lg:pt-[60px]">
+              <div className="h-10 w-10 flex items-center justify-center text-muted-foreground">
+                <ArrowLeftRight className="h-5 w-5" />
+              </div>
+            </div>
+
+            {/* 右侧：解密 */}
+            <Card className="p-4">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold">解密</h3>
+                <Button onClick={handleAesDecrypt} size="sm" variant="secondary" className="gap-2">
+                  <Unlock className="h-4 w-4" />
+                  解密
+                </Button>
+              </div>
+              <div className="mb-3">
+                <label className="text-sm font-medium mb-2 block">密文输出</label>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm text-muted-foreground">
+                    {aesOutput.length} 字符
+                  </span>
+                  {aesOutput && <CopyButton text={aesOutput} />}
+                </div>
+              </div>
+              <CodeEditor
+                value={aesOutput}
+                onChange={setAesOutput}
+                placeholder="处理结果将显示在这里..."
+                readOnly
+                minHeight="400px"
+                maxHeight="600px"
+              />
+            </Card>
+          </div>
         </TabsContent>
 
         {/* 哈希计算 */}
@@ -656,6 +542,8 @@ export default function CryptoPage() {
           <p><strong>AES 加密：</strong></p>
           <p>• AES (Advanced Encryption Standard) 是一种对称加密算法</p>
           <p>• 加密和解密使用相同的密钥</p>
+          <p>• 点击中间的箭头按钮可切换加密/解密方向</p>
+          <p>• 勾选"实时转换"后，输入框内容变化时自动转换</p>
           <p>• 请妥善保管密钥，丢失后将无法解密</p>
           
           <p className="mt-4"><strong>哈希计算：</strong></p>

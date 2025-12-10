@@ -1,16 +1,17 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CodeEditor } from '@/components/common/CodeEditor';
 import { CopyButton } from '@/components/common/CopyButton';
-import { 
-  FileCode2, 
+import {
+  FileCode2,
   Image as ImageIcon,
   Upload,
   Download,
   RotateCcw,
-  Wand2
+  Wand2,
+  ArrowLeftRight
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -19,7 +20,20 @@ export default function Base64Page() {
   const [textOutput, setTextOutput] = useState('');
   const [imagePreview, setImagePreview] = useState('');
   const [imageBase64, setImageBase64] = useState('');
+  const [liveConvert, setLiveConvert] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // 实时转换效果 - 编码
+  useEffect(() => {
+    if (liveConvert && textInput) {
+      try {
+        const encoded = btoa(unescape(encodeURIComponent(textInput)));
+        setTextOutput(encoded);
+      } catch (error) {
+        console.error('Auto encode error:', error);
+      }
+    }
+  }, [textInput, liveConvert]);
 
   // Base64 编码
   const handleEncode = () => {
@@ -36,8 +50,8 @@ export default function Base64Page() {
   // Base64 解码
   const handleDecode = () => {
     try {
-      const decoded = decodeURIComponent(escape(atob(textInput)));
-      setTextOutput(decoded);
+      const decoded = decodeURIComponent(escape(atob(textOutput)));
+      setTextInput(decoded);
       toast.success('解码成功');
     } catch (error) {
       toast.error('解码失败，请检查输入是否为有效的 Base64');
@@ -183,48 +197,75 @@ export default function Base64Page() {
         <TabsContent value="text" className="space-y-4">
           {/* 工具栏 */}
           <Card className="p-4">
-            <div className="flex flex-wrap gap-2">
-              <Button onClick={handleEncode} className="gap-2">
-                编码
-              </Button>
-              <Button onClick={handleDecode} variant="secondary" className="gap-2">
-                解码
-              </Button>
-              <Button onClick={handleClearText} variant="ghost" className="gap-2">
-                <RotateCcw className="h-4 w-4" />
-                清空
-              </Button>
-              <Button onClick={handleTextExample} variant="ghost" className="gap-2">
-                <Wand2 className="h-4 w-4" />
-                示例
-              </Button>
+            <div className="flex flex-wrap gap-4 items-center">
+              <div className="flex gap-2">
+                <Button onClick={handleClearText} variant="ghost" className="gap-2">
+                  <RotateCcw className="h-4 w-4" />
+                  清空
+                </Button>
+                <Button onClick={handleTextExample} variant="ghost" className="gap-2">
+                  <Wand2 className="h-4 w-4" />
+                  示例
+                </Button>
+              </div>
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="liveConvert"
+                  checked={liveConvert}
+                  onChange={(e) => setLiveConvert(e.target.checked)}
+                  className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary"
+                />
+                <label htmlFor="liveConvert" className="text-sm cursor-pointer">
+                  实时转换
+                </label>
+              </div>
             </div>
           </Card>
 
           {/* 输入输出区域 */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {/* 输入区 */}
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-4 items-start">
+            {/* 左侧：编码 */}
             <Card className="p-4">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="font-semibold">输入</h3>
-                <span className="text-sm text-muted-foreground">
+                <h3 className="font-semibold">编码</h3>
+                <Button onClick={handleEncode} size="sm" className="gap-2">
+                  编码
+                </Button>
+              </div>
+              <div className="mb-3">
+                <label className="text-sm font-medium mb-2 block">明文输入</label>
+                <div className="text-sm text-muted-foreground mb-2">
                   {textInput.length} 字符
-                </span>
+                </div>
               </div>
               <CodeEditor
                 value={textInput}
                 onChange={setTextInput}
-                placeholder="请输入要编码或解码的文本..."
+                placeholder="请输入要编码的文本..."
                 minHeight="400px"
                 maxHeight="600px"
               />
             </Card>
 
-            {/* 输出区 */}
+            {/* 中间箭头（仅视觉指示） */}
+            <div className="flex items-center justify-center lg:pt-[60px]">
+              <div className="h-10 w-10 flex items-center justify-center text-muted-foreground">
+                <ArrowLeftRight className="h-5 w-5" />
+              </div>
+            </div>
+
+            {/* 右侧：解码 */}
             <Card className="p-4">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="font-semibold">输出</h3>
-                <div className="flex gap-2">
+                <h3 className="font-semibold">解码</h3>
+                <Button onClick={handleDecode} size="sm" variant="secondary" className="gap-2">
+                  解码
+                </Button>
+              </div>
+              <div className="mb-3">
+                <label className="text-sm font-medium mb-2 block">密文输出</label>
+                <div className="flex items-center justify-between mb-2">
                   <span className="text-sm text-muted-foreground">
                     {textOutput.length} 字符
                   </span>
@@ -328,8 +369,9 @@ export default function Base64Page() {
         <h3 className="font-semibold mb-3">使用说明</h3>
         <div className="space-y-2 text-sm text-muted-foreground">
           <p><strong>文本编解码：</strong></p>
-          <p>• <strong>编码</strong>: 将普通文本转换为 Base64 格式</p>
-          <p>• <strong>解码</strong>: 将 Base64 格式还原为普通文本</p>
+          <p>• <strong>编码</strong>: 在左侧输入明文，点击"编码"按钮转换为Base64</p>
+          <p>• <strong>解码</strong>: 在右侧输入Base64，点击"解码"按钮还原为明文</p>
+          <p>• <strong>实时转换</strong>: 勾选后，左侧输入框内容变化时自动编码</p>
           <p>• 支持中文和特殊字符</p>
           
           <p className="mt-4"><strong>图片处理：</strong></p>
