@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Link, useLocation } from 'react-router-dom';
 import {
   Lock,
@@ -106,6 +107,7 @@ export function Sidebar({ className, collapsed = false, onToggleCollapse }: Side
   const [expandedCategories, setExpandedCategories] = useState<string[]>(
     toolCategories.map(cat => cat.name)
   );
+  const [hoveredTool, setHoveredTool] = useState<{ name: string; rect: DOMRect } | null>(null);
 
   const toggleCategory = (categoryName: string) => {
     setExpandedCategories(prev =>
@@ -159,6 +161,11 @@ export function Sidebar({ className, collapsed = false, onToggleCollapse }: Side
                           ? 'bg-gradient-to-r from-primary/20 to-primary/10 text-primary shadow-sm'
                           : 'text-muted-foreground hover:bg-card/80 hover:text-foreground hover:shadow-sm'
                       )}
+                      onMouseEnter={(e) => {
+                        const rect = e.currentTarget.getBoundingClientRect();
+                        setHoveredTool({ name: tool.name, rect });
+                      }}
+                      onMouseLeave={() => setHoveredTool(null)}
                     >
                       <div className={cn(
                         "p-1 rounded-lg transition-all",
@@ -168,15 +175,6 @@ export function Sidebar({ className, collapsed = false, onToggleCollapse }: Side
                       )}>
                         {tool.icon}
                       </div>
-                      {/* 现代化 Tooltip - 使用 fixed 定位避免被裁剪 */}
-                      <span className="fixed left-[calc(4rem+0.75rem)] px-3 py-2 bg-popover/95 backdrop-blur-sm text-popover-foreground text-sm font-medium rounded-lg shadow-lg border border-border/50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-out whitespace-nowrap z-[100] pointer-events-none">
-                        {tool.name}
-                        {/* 箭头 */}
-                        <span className="absolute right-full top-1/2 -translate-y-1/2 -mr-[1px]">
-                          <span className="block w-0 h-0 border-[6px] border-transparent border-r-border/50"></span>
-                          <span className="absolute top-0 left-[1px] block w-0 h-0 border-[6px] border-transparent border-r-popover/95"></span>
-                        </span>
-                      </span>
                     </Link>
                   );
                 })
@@ -281,6 +279,26 @@ export function Sidebar({ className, collapsed = false, onToggleCollapse }: Side
             )}
           </Button>
         </div>
+      )}
+
+      {/* Tooltip Portal - 渲染到 body，确保不被遮挡 */}
+      {collapsed && hoveredTool && createPortal(
+        <div
+          className="fixed px-3 py-2 bg-popover/95 backdrop-blur-sm text-popover-foreground text-sm font-medium rounded-lg shadow-lg border border-border/50 whitespace-nowrap z-[99999] pointer-events-none animate-in fade-in-0 zoom-in-95 duration-200"
+          style={{
+            left: `${hoveredTool.rect.right + 12}px`,
+            top: `${hoveredTool.rect.top + hoveredTool.rect.height / 2}px`,
+            transform: 'translateY(-50%)'
+          }}
+        >
+          {hoveredTool.name}
+          {/* 箭头 */}
+          <span className="absolute right-full top-1/2 -translate-y-1/2 -mr-[1px]">
+            <span className="block w-0 h-0 border-[6px] border-transparent border-r-border/50"></span>
+            <span className="absolute top-0 left-[1px] block w-0 h-0 border-[6px] border-transparent border-r-popover/95"></span>
+          </span>
+        </div>,
+        document.body
       )}
     </aside>
   );
