@@ -23,25 +23,51 @@ export function CodeEditor({
   maxHeight = '600px',
 }: CodeEditorProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const lineNumbersRef = useRef<HTMLDivElement>(null);
 
   // 自动调整高度
   useEffect(() => {
     const textarea = textareaRef.current;
+    const lineNumbers = lineNumbersRef.current;
     if (textarea) {
       textarea.style.height = 'auto';
       const scrollHeight = textarea.scrollHeight;
       const minHeightPx = parseInt(minHeight);
       const maxHeightPx = parseInt(maxHeight);
       
+      let finalHeight: string;
       if (scrollHeight < minHeightPx) {
-        textarea.style.height = minHeight;
+        finalHeight = minHeight;
       } else if (scrollHeight > maxHeightPx) {
-        textarea.style.height = maxHeight;
+        finalHeight = maxHeight;
       } else {
-        textarea.style.height = `${scrollHeight}px`;
+        finalHeight = `${scrollHeight}px`;
+      }
+      
+      textarea.style.height = finalHeight;
+      
+      // 同步行号区域的最大可视高度
+      if (lineNumbers) {
+        lineNumbers.style.maxHeight = finalHeight;
       }
     }
   }, [value, minHeight, maxHeight]);
+
+  // 同步滚动位置
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    const lineNumbers = lineNumbersRef.current;
+    
+    if (!textarea || !lineNumbers) return;
+
+    const handleScroll = () => {
+      // 直接同步 scrollTop，无延迟
+      lineNumbers.scrollTop = textarea.scrollTop;
+    };
+
+    textarea.addEventListener('scroll', handleScroll);
+    return () => textarea.removeEventListener('scroll', handleScroll);
+  }, [value]);
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     onChange(e.target.value);
@@ -51,7 +77,10 @@ export function CodeEditor({
     <div className={cn('relative', className)}>
       {/* 行号显示（可选功能） */}
       {value && (
-        <div className="absolute left-0 top-0 bottom-0 w-12 bg-muted/30 border-r border-border pointer-events-none hidden md:block z-10">
+        <div
+          ref={lineNumbersRef}
+          className="absolute left-0 top-0 w-12 bg-muted/30 border-r border-border pointer-events-none hidden md:block z-10 overflow-y-scroll scrollbar-hide"
+        >
           <div className="px-2 py-2 text-xs text-muted-foreground font-mono leading-relaxed">
             {value.split('\n').map((_, index) => (
               <div key={index} className="text-right">
