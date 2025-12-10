@@ -49,34 +49,9 @@ export function CodeEditor({
 
   return (
     <div className={cn('relative', className)}>
-      <textarea
-        ref={textareaRef}
-        value={value}
-        onChange={handleChange}
-        placeholder={placeholder}
-        readOnly={readOnly}
-        spellCheck={false}
-        className={cn(
-          'w-full rounded-md border border-input bg-background px-3 py-2',
-          'font-mono text-sm leading-relaxed',
-          'placeholder:text-muted-foreground',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-          'disabled:cursor-not-allowed disabled:opacity-50',
-          'resize-none overflow-auto',
-          'scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent',
-          readOnly && 'cursor-default'
-        )}
-        style={{
-          minHeight,
-          maxHeight,
-          tabSize: 2,
-        }}
-        data-language={language}
-      />
-      
       {/* 行号显示（可选功能） */}
       {value && (
-        <div className="absolute left-0 top-0 bottom-0 w-12 bg-muted/30 border-r border-border pointer-events-none hidden md:block">
+        <div className="absolute left-0 top-0 bottom-0 w-12 bg-muted/30 border-r border-border pointer-events-none hidden md:block z-10">
           <div className="px-2 py-2 text-xs text-muted-foreground font-mono leading-relaxed">
             {value.split('\n').map((_, index) => (
               <div key={index} className="text-right">
@@ -86,6 +61,32 @@ export function CodeEditor({
           </div>
         </div>
       )}
+      
+      <textarea
+        ref={textareaRef}
+        value={value}
+        onChange={handleChange}
+        placeholder={placeholder}
+        readOnly={readOnly}
+        spellCheck={false}
+        className={cn(
+          'w-full rounded-md border border-input bg-background py-2',
+          'font-mono text-sm leading-relaxed',
+          'placeholder:text-muted-foreground',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+          'disabled:cursor-not-allowed disabled:opacity-50',
+          'resize-none overflow-auto',
+          'scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent',
+          readOnly && 'cursor-default',
+          value ? 'md:pl-14 px-3' : 'px-3'
+        )}
+        style={{
+          minHeight,
+          maxHeight,
+          tabSize: 2,
+        }}
+        data-language={language}
+      />
     </div>
   );
 }
