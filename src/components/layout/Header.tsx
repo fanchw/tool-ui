@@ -95,7 +95,7 @@ export function Header({ onMenuClick }: HeaderProps) {
             className="hover:bg-primary/10 group"
           >
             <a
-              href="https://github.com/yourusername/tool-ui"
+              href="https://github.com/fanchw/tool-ui"
               target="_blank"
               rel="noopener noreferrer"
               title="View on GitHub"

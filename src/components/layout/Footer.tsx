@@ -15,7 +15,7 @@ export function Footer() {
         </div>
         <div className="flex items-center gap-4 text-sm text-muted-foreground">
           <a
-            href="https://github.com/yourusername/tool-ui"
+            href="https://github.com/fanchw/tool-ui"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-foreground transition-colors"
@@ -24,7 +24,7 @@ export function Footer() {
           </a>
           <span>•</span>
           <a
-            href="https://github.com/yourusername/tool-ui/issues"
+            href="https://github.com/fanchw/tool-ui/issues"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-foreground transition-colors"

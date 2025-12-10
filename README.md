@@ -80,7 +80,7 @@
 
 ```bash
 # 克隆项目
-git clone https://github.com/yourusername/tool-ui.git
+git clone https://github.com/fanchw/tool-ui.git
 
 # 进入项目目录
 cd tool-ui
@@ -303,8 +303,8 @@ npm run test:e2e
 
 ## 📮 联系方式
 
-- 项目主页: [https://github.com/yourusername/tool-ui](https://github.com/yourusername/tool-ui)
-- 问题反馈: [https://github.com/yourusername/tool-ui/issues](https://github.com/yourusername/tool-ui/issues)
+- 项目主页: [https://github.com/fanchw/tool-ui](https://github.com/fanchw/tool-ui)
+- 问题反馈: [https://github.com/fanchw/tool-ui/issues](https://github.com/fanchw/tool-ui/issues)
 
 ## 🗺️ 路线图
 
@@ -323,4 +323,4 @@ npm run test:e2e
 
 ---
 
-Made with ❤️ by [Your Name](https://github.com/yourusername)
+Made with ❤️ by [fanchw](https://github.com/fanchw)

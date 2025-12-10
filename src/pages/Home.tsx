@@ -184,7 +184,7 @@ export default function Home() {
 
           <div className="flex items-center justify-center gap-4 pt-4">
             <a
-              href="https://github.com/yourusername/tool-ui"
+              href="https://github.com/fanchw/tool-ui"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground font-medium hover:shadow-lg hover:shadow-primary/30 hover:-translate-y-0.5 transition-all duration-300"
