@@ -3,8 +3,16 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { CodeEditor } from '@/components/common/CodeEditor';
 import { CopyButton } from '@/components/common/CopyButton';
+import { KeyGenerator } from '@/components/crypto/KeyGenerator';
 import {
   Lock,
   Unlock,
@@ -35,9 +43,6 @@ export default function CryptoPage() {
 
   // 当前 AES tab
   const [aesTab, setAesTab] = useState<'encrypt' | 'decrypt'>('encrypt');
-
-  // 密钥长度选项（bit）
-  const keyLengthOptions = [64, 128, 192, 256, 512, 1024, 2048, 4096];
 
   // 哈希
   const [hashInput, setHashInput] = useState('');
@@ -97,22 +102,16 @@ export default function CryptoPage() {
     }
   };
 
-  // 生成随机密钥（加密）
-  const handleGenerateEncryptKey = (bits: number) => {
-    const bytes = bits / 8;
-    const key = CryptoJS.lib.WordArray.random(bytes).toString();
+  // 处理加密密钥生成
+  const handleEncryptKeyGenerated = (key: string) => {
     setEncryptKey(key);
     setShowEncryptKeyGenerator(false);
-    toast.success(`已生成 ${bits}-bit 密钥`);
   };
 
-  // 生成随机密钥（解密）
-  const handleGenerateDecryptKey = (bits: number) => {
-    const bytes = bits / 8;
-    const key = CryptoJS.lib.WordArray.random(bytes).toString();
+  // 处理解密密钥生成
+  const handleDecryptKeyGenerated = (key: string) => {
     setDecryptKey(key);
     setShowDecryptKeyGenerator(false);
-    toast.success(`已生成 ${bits}-bit 密钥`);
   };
 
   // 清空加密
@@ -289,27 +288,20 @@ export default function CryptoPage() {
                     示例
                   </Button>
                 </div>
-
-                {/* 密钥长度选择器 */}
-                {showEncryptKeyGenerator && (
-                  <div className="mt-4 p-4 border rounded-lg bg-muted/30">
-                    <h4 className="text-sm font-semibold mb-3">选择密钥长度</h4>
-                    <div className="grid grid-cols-4 gap-2">
-                      {keyLengthOptions.map((bits) => (
-                        <Button
-                          key={bits}
-                          onClick={() => handleGenerateEncryptKey(bits)}
-                          variant="secondary"
-                          size="sm"
-                          className="font-mono"
-                        >
-                          {bits}-bit
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </Card>
+
+              {/* 加密密钥生成器 Dialog */}
+              <Dialog open={showEncryptKeyGenerator} onOpenChange={setShowEncryptKeyGenerator}>
+                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>密钥生成器 - 加密</DialogTitle>
+                    <DialogDescription>
+                      生成安全的随机密钥用于AES加密
+                    </DialogDescription>
+                  </DialogHeader>
+                  <KeyGenerator onKeyGenerated={handleEncryptKeyGenerated} />
+                </DialogContent>
+              </Dialog>
 
               {/* 密钥输入 */}
               <Card className="p-4">
@@ -405,27 +397,20 @@ export default function CryptoPage() {
                     示例
                   </Button>
                 </div>
-
-                {/* 密钥长度选择器 */}
-                {showDecryptKeyGenerator && (
-                  <div className="mt-4 p-4 border rounded-lg bg-muted/30">
-                    <h4 className="text-sm font-semibold mb-3">选择密钥长度</h4>
-                    <div className="grid grid-cols-4 gap-2">
-                      {keyLengthOptions.map((bits) => (
-                        <Button
-                          key={bits}
-                          onClick={() => handleGenerateDecryptKey(bits)}
-                          variant="secondary"
-                          size="sm"
-                          className="font-mono"
-                        >
-                          {bits}-bit
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </Card>
+
+              {/* 解密密钥生成器 Dialog */}
+              <Dialog open={showDecryptKeyGenerator} onOpenChange={setShowDecryptKeyGenerator}>
+                <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>密钥生成器 - 解密</DialogTitle>
+                    <DialogDescription>
+                      生成安全的随机密钥用于AES解密
+                    </DialogDescription>
+                  </DialogHeader>
+                  <KeyGenerator onKeyGenerated={handleDecryptKeyGenerated} />
+                </DialogContent>
+              </Dialog>
 
               {/* 密钥输入 */}
               <Card className="p-4">
