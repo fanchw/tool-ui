@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import Editor, { OnMount } from '@monaco-editor/react';
 import { useThemeStore } from '@/store/useThemeStore';
 import { cn } from '@/lib/utils';
@@ -25,11 +25,11 @@ export function MonacoEditor({
   maxHeight = '600px',
 }: MonacoEditorProps) {
   const { theme } = useThemeStore();
-  const editorRef = useRef<any>(null);
+  const editorRef = useRef<Parameters<OnMount>[0] | null>(null);
   const [isFocused, setIsFocused] = useState(false);
   const [contentLeft, setContentLeft] = useState(62); // 默认值
 
-  const handleEditorDidMount: OnMount = (editor, monaco) => {
+  const handleEditorDidMount: OnMount = (editor, _monaco) => {
     editorRef.current = editor;
     
     // 配置编辑器选项

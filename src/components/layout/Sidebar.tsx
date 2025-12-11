@@ -11,7 +11,6 @@ import {
   Search,
   ChevronDown,
   ChevronRight,
-  ChevronLeft,
   ChevronsLeft
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';

@@ -1,14 +1,12 @@
 import { useState, useRef } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { CopyButton } from '@/components/common/CopyButton';
 import { CodeEditor } from '@/components/common/CodeEditor';
 import {
   Key,
   Download,
   Upload,
-  FileText,
   Eye,
   EyeOff,
 } from 'lucide-react';
