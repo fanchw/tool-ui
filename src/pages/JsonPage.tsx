@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { CodeEditor } from '@/components/common/CodeEditor';
+import { MonacoEditor } from '@/components/common/MonacoEditor';
 import { CopyButton } from '@/components/common/CopyButton';
 import { 
   FileJson, 
@@ -243,7 +243,7 @@ export default function JsonPage() {
               </span>
             </div>
           </div>
-          <CodeEditor
+          <MonacoEditor
             value={input}
             onChange={setInput}
             placeholder="请输入 JSON 数据..."
@@ -264,12 +264,11 @@ export default function JsonPage() {
               {output && <CopyButton text={output} />}
             </div>
           </div>
-          <CodeEditor
+          <MonacoEditor
             value={output}
             onChange={setOutput}
             placeholder="处理结果将显示在这里..."
             language="json"
-            readOnly
             minHeight="400px"
             maxHeight="600px"
           />
