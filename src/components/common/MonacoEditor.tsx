@@ -66,10 +66,10 @@ export function MonacoEditor({
   };
 
   return (
-    <div 
-      className={cn('relative border rounded-md overflow-hidden', className)}
-      style={{ 
-        minHeight, 
+    <div
+      className={cn('relative rounded-md overflow-hidden', className)}
+      style={{
+        minHeight,
         maxHeight,
         height: minHeight,
       }}

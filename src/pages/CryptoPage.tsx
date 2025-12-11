@@ -463,7 +463,6 @@ export default function CryptoPage() {
                 value={aesOutput}
                 onChange={setAesOutput}
                 placeholder="处理结果将显示在这里..."
-                readOnly
                 minHeight="400px"
                 maxHeight="600px"
               />
@@ -608,7 +607,6 @@ export default function CryptoPage() {
                 value={rsaCiphertext}
                 onChange={setRsaCiphertext}
                 placeholder="处理结果将显示在这里..."
-                readOnly
                 minHeight="400px"
                 maxHeight="600px"
               />
