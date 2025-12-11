@@ -1,5 +1,6 @@
-import { useRef, useEffect } from 'react';
+import CodeEditorComponent from '@uiw/react-textarea-code-editor';
 import { cn } from '@/lib/utils';
+import { useThemeStore } from '@/store/useThemeStore';
 
 interface CodeEditorProps {
   value: string;
@@ -22,99 +23,50 @@ export function CodeEditor({
   minHeight = '200px',
   maxHeight = '600px',
 }: CodeEditorProps) {
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const lineNumbersRef = useRef<HTMLDivElement>(null);
+  const { theme } = useThemeStore();
 
-  // 自动调整高度
-  useEffect(() => {
-    const textarea = textareaRef.current;
-    const lineNumbers = lineNumbersRef.current;
-    if (textarea) {
-      textarea.style.height = 'auto';
-      const scrollHeight = textarea.scrollHeight;
-      const minHeightPx = parseInt(minHeight);
-      const maxHeightPx = parseInt(maxHeight);
-      
-      let finalHeight: string;
-      if (scrollHeight < minHeightPx) {
-        finalHeight = minHeight;
-      } else if (scrollHeight > maxHeightPx) {
-        finalHeight = maxHeight;
-      } else {
-        finalHeight = `${scrollHeight}px`;
-      }
-      
-      textarea.style.height = finalHeight;
-      
-      // 同步行号区域的最大可视高度
-      if (lineNumbers) {
-        lineNumbers.style.maxHeight = finalHeight;
-      }
-    }
-  }, [value, minHeight, maxHeight]);
-
-  // 同步滚动位置
-  useEffect(() => {
-    const textarea = textareaRef.current;
-    const lineNumbers = lineNumbersRef.current;
-    
-    if (!textarea || !lineNumbers) return;
-
-    const handleScroll = () => {
-      // 直接同步 scrollTop，无延迟
-      lineNumbers.scrollTop = textarea.scrollTop;
-    };
-
-    textarea.addEventListener('scroll', handleScroll);
-    return () => textarea.removeEventListener('scroll', handleScroll);
-  }, [value]);
-
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    onChange(e.target.value);
+  // 主题配色 - 使用 VS Code 风格
+  const themeStyles = {
+    light: {
+      backgroundColor: '#ffffff',
+      color: '#24292e',
+      borderColor: 'hsl(240 5.9% 90%)',
+    },
+    dark: {
+      backgroundColor: '#1e1e1e',
+      color: '#d4d4d4',
+      borderColor: 'hsl(240 3.7% 15.9%)',
+    },
   };
+
+  const currentTheme = themeStyles[theme as keyof typeof themeStyles] || themeStyles.light;
 
   return (
     <div className={cn('relative', className)}>
-      {/* 行号显示（可选功能） */}
-      {value && (
-        <div
-          ref={lineNumbersRef}
-          className="absolute left-0 top-0 w-12 bg-muted/30 border-r border-border pointer-events-none hidden md:block z-10 overflow-y-scroll scrollbar-hide"
-        >
-          <div className="px-2 py-2 text-xs text-muted-foreground font-mono leading-relaxed">
-            {value.split('\n').map((_, index) => (
-              <div key={index} className="text-right">
-                {index + 1}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-      
-      <textarea
-        ref={textareaRef}
+      <CodeEditorComponent
         value={value}
-        onChange={handleChange}
+        language={language}
         placeholder={placeholder}
+        onChange={(evn) => onChange(evn.target.value)}
         readOnly={readOnly}
-        spellCheck={false}
-        className={cn(
-          'w-full rounded-md border border-input bg-background py-2',
-          'font-mono text-sm leading-relaxed',
-          'placeholder:text-muted-foreground',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-          'disabled:cursor-not-allowed disabled:opacity-50',
-          'resize-none overflow-auto',
-          'scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent',
-          readOnly && 'cursor-default',
-          value ? 'md:pl-14 px-3' : 'px-3'
-        )}
+        data-color-mode={theme}
+        padding={15}
         style={{
           minHeight,
           maxHeight,
-          tabSize: 2,
+          fontSize: 14,
+          backgroundColor: currentTheme.backgroundColor,
+          color: currentTheme.color,
+          fontFamily: 'ui-monospace, SFMono-Regular, SF Mono, Consolas, Liberation Mono, Menlo, monospace',
+          overflow: 'auto',
+          borderRadius: '0.375rem',
+          border: '1px solid',
+          borderColor: currentTheme.borderColor,
         }}
-        data-language={language}
+        className={cn(
+          'scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent',
+          readOnly && 'cursor-default'
+        )}
       />
     </div>
   );
