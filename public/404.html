@@ -2,28 +2,24 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Redirecting...</title>
+    <title>Loading...</title>
     <script>
-      // GitHub Pages 404 页面重定向脚本
-      // 当 GitHub Pages 找不到页面时，会显示这个 404 页面
-      // 我们需要将 URL 重定向到 index.html，同时保持路径信息
+      // GitHub Pages SPA 重定向方案
+      // 将当前路径保存到 sessionStorage，然后重定向到 index.html
+      // 这样可以避免使用查询参数，让 URL 更干净
       
-      var pathSegmentsToKeep = 1; // 保留路径段数量，对应 /tool-ui/ 这一层
+      sessionStorage.setItem('redirect', location.href);
       
       var l = window.location;
       var repo = l.pathname.split('/')[1];
       
-      // 将路径信息编码到查询字符串中
+      // 直接重定向到 index.html，不使用查询参数
       l.replace(
         l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-        '/' + repo + '/?p=/' +
-        l.pathname.split('/').slice(2).join('/').replace(/&/g, '~and~') +
-        (l.search ? '&q=' + l.search.slice(1).replace(/&/g, '~and~') : '') +
-        l.hash
+        '/' + repo + '/'
       );
     </script>
   </head>
   <body>
-    <p>Redirecting...</p>
   </body>
 </html>

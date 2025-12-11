@@ -11,31 +11,14 @@
     <!-- GitHub Pages SPA 路由支持 -->
     <script>
       // 从 404 页面重定向回来后，恢复真实的 URL
+      // 使用 sessionStorage 避免 URL 中出现查询参数，提供更好的用户体验
       (function() {
         var redirect = sessionStorage.getItem('redirect');
-        sessionStorage.removeItem('redirect');
         if (redirect && redirect !== location.href) {
+          sessionStorage.removeItem('redirect');
           history.replaceState(null, null, redirect);
         }
       })();
-      
-      // 处理从 404.html 传递过来的路径参数
-      (function(l) {
-        if (l.search) {
-          var q = {};
-          l.search.slice(1).split('&').forEach(function(v) {
-            var a = v.split('=');
-            q[a[0]] = a.slice(1).join('=').replace(/~and~/g, '&');
-          });
-          if (q.p !== undefined) {
-            window.history.replaceState(null, null,
-              l.pathname.slice(0, -1) + (q.p || '') +
-              (q.q ? ('?' + q.q) : '') +
-              l.hash
-            );
-          }
-        }
-      }(window.location));
     </script>
   </head>
   <body>

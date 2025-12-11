@@ -8,6 +8,11 @@ import AppRouter from './router';
 function App() {
   const theme = useThemeStore((state) => state.theme);
 
+  // 根据环境变量动态设置 basename
+  // 开发环境: "/" (本地开发)
+  // 生产环境: "/tool-ui" (GitHub Pages)
+  const basename = import.meta.env.DEV ? '/' : '/tool-ui';
+
   // 初始化主题
   useEffect(() => {
     if (theme === 'dark') {
@@ -19,7 +24,7 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <BrowserRouter basename="/tool-ui">
+      <BrowserRouter basename={basename}>
         <AppRouter />
         <Toaster
           position="top-center"
