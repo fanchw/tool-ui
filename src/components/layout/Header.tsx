@@ -11,7 +11,7 @@ export function Header({ onMenuClick }: HeaderProps) {
   const { theme, toggleTheme } = useThemeStore();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b glass shadow-sm">
+    <header className="sticky top-0 z-50 w-full border-b border-border/50 glass backdrop-blur-lg bg-background/80">
       <div className="container flex h-16 items-center">
         {/* 移动端菜单按钮 */}
         <Button
@@ -26,7 +26,7 @@ export function Header({ onMenuClick }: HeaderProps) {
 
         {/* Logo */}
         <Link to="/" className="mr-6 flex items-center space-x-3 group">
-          <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/80 text-primary-foreground shadow-lg shadow-primary/25 transition-all duration-300 group-hover:shadow-xl group-hover:shadow-primary/40 group-hover:scale-110">
+          <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/80 text-primary-foreground shadow-md shadow-primary/20 transition-all duration-300 group-hover:shadow-lg group-hover:shadow-primary/30 group-hover:scale-105">
             <span className="text-xl font-bold">DT</span>
             <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>

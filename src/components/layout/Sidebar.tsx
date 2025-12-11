@@ -134,7 +134,7 @@ export function Sidebar({ className, collapsed = false, onToggleCollapse }: Side
               <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground transition-colors group-focus-within:text-primary" />
               <Input
                 placeholder="搜索工具..."
-                className="pl-10 h-11 border-2 focus:border-primary/50 transition-all bg-card/50 backdrop-blur"
+                className="pl-10 h-10 border-border/30 focus:border-primary/30 transition-all bg-card/30 backdrop-blur hover:bg-card/50"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -155,10 +155,10 @@ export function Sidebar({ className, collapsed = false, onToggleCollapse }: Side
                       key={tool.path}
                       to={tool.path}
                       className={cn(
-                        'flex items-center justify-center rounded-xl p-3 transition-all group relative overflow-visible',
+                        'flex items-center justify-center rounded-lg p-2.5 transition-all group relative overflow-visible',
                         isActive
-                          ? 'bg-gradient-to-r from-primary/20 to-primary/10 text-primary shadow-sm'
-                          : 'text-muted-foreground hover:bg-card/80 hover:text-foreground hover:shadow-sm'
+                          ? 'bg-gradient-to-r from-primary/15 to-primary/5 text-primary'
+                          : 'text-muted-foreground hover:bg-card/60 hover:text-foreground'
                       )}
                       onMouseEnter={(e) => {
                         const rect = e.currentTarget.getBoundingClientRect();
@@ -167,10 +167,10 @@ export function Sidebar({ className, collapsed = false, onToggleCollapse }: Side
                       onMouseLeave={() => setHoveredTool(null)}
                     >
                       <div className={cn(
-                        "p-1 rounded-lg transition-all",
+                        "p-1 rounded-md transition-all",
                         isActive
-                          ? "bg-primary/20 text-primary"
-                          : "bg-muted/50 group-hover:bg-primary/10 group-hover:text-primary"
+                          ? "text-primary"
+                          : "group-hover:text-primary"
                       )}>
                         {tool.icon}
                       </div>
@@ -186,9 +186,9 @@ export function Sidebar({ className, collapsed = false, onToggleCollapse }: Side
                 <div key={category.name} className="space-y-2">
                   <button
                     onClick={() => toggleCategory(category.name)}
-                    className="flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-sm font-semibold hover:bg-primary/10 transition-all group bg-card/50 backdrop-blur border border-border/50"
+                    className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm font-medium hover:bg-primary/5 transition-all group bg-card/30 backdrop-blur border border-border/30"
                   >
-                    <span className="text-foreground group-hover:text-primary transition-colors">{category.name}</span>
+                    <span className="text-foreground/80 group-hover:text-primary transition-colors">{category.name}</span>
                     {expandedCategories.includes(category.name) ? (
                       <ChevronDown className="h-4 w-4 transition-transform group-hover:text-primary" />
                     ) : (
@@ -205,17 +205,17 @@ export function Sidebar({ className, collapsed = false, onToggleCollapse }: Side
                             key={tool.path}
                             to={tool.path}
                             className={cn(
-                              'flex items-start gap-3 rounded-xl px-3 py-3 text-sm transition-all group relative overflow-hidden',
+                              'flex items-start gap-3 rounded-lg px-3 py-2.5 text-sm transition-all group relative overflow-hidden',
                               isActive
-                                ? 'bg-gradient-to-r from-primary/20 to-primary/10 text-foreground shadow-sm border-l-2 border-primary'
-                                : 'text-muted-foreground hover:bg-card/80 hover:text-foreground hover:shadow-sm backdrop-blur border border-transparent hover:border-border/50'
+                                ? 'bg-gradient-to-r from-primary/15 to-primary/5 text-foreground border-l-2 border-primary'
+                                : 'text-muted-foreground hover:bg-card/50 hover:text-foreground backdrop-blur border border-transparent hover:border-border/30'
                             )}
                           >
                             <div className={cn(
-                              "mt-0.5 p-1.5 rounded-lg transition-all",
+                              "mt-0.5 p-1.5 rounded-md transition-all",
                               isActive
-                                ? "bg-primary/20 text-primary"
-                                : "bg-muted/50 group-hover:bg-primary/10 group-hover:text-primary"
+                                ? "text-primary"
+                                : "group-hover:text-primary"
                             )}>
                               {tool.icon}
                             </div>
