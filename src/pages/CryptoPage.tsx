@@ -293,16 +293,18 @@ export default function CryptoPage() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* 页面标题 */}
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Lock className="h-8 w-8" />
-          加密解密工具
-        </h1>
-        <p className="text-muted-foreground mt-2">
-          支持 AES、DES、MD5、SHA 等多种加密算法
-        </p>
+    <div className="space-y-4">
+      {/* 页面标题 - 紧凑版 */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold flex items-center gap-2">
+            <Lock className="h-6 w-6" />
+            加密解密工具
+          </h1>
+          <p className="text-muted-foreground text-sm mt-1">
+            支持 AES、RSA、MD5、SHA 等多种加密算法
+          </p>
+        </div>
       </div>
 
       {/* 标签页 */}
@@ -327,25 +329,26 @@ export default function CryptoPage() {
         </TabsList>
 
         {/* AES 加密解密 */}
-        <TabsContent value="aes" className="space-y-4">
-          {/* 工具栏 */}
-          <Card className="p-4">
-            <div className="flex flex-wrap gap-4 items-center">
+        <TabsContent value="aes" className="space-y-3">
+          {/* 工具栏 - 紧凑版 */}
+          <Card className="p-3">
+            <div className="flex flex-wrap gap-2 items-center justify-between">
               <div className="flex gap-2">
                 <Button
                   onClick={() => setShowAesKeyGenerator(!showAesKeyGenerator)}
                   variant="outline"
-                  className="gap-2"
+                  size="sm"
+                  className="gap-1.5"
                 >
-                  <Key className="h-4 w-4" />
+                  <Key className="h-3.5 w-3.5" />
                   生成密钥
                 </Button>
-                <Button onClick={handleClearAes} variant="ghost" className="gap-2">
-                  <RotateCcw className="h-4 w-4" />
+                <Button onClick={handleClearAes} variant="ghost" size="sm" className="gap-1.5">
+                  <RotateCcw className="h-3.5 w-3.5" />
                   清空
                 </Button>
-                <Button onClick={handleAesExample} variant="ghost" className="gap-2">
-                  <Wand2 className="h-4 w-4" />
+                <Button onClick={handleAesExample} variant="ghost" size="sm" className="gap-1.5">
+                  <Wand2 className="h-3.5 w-3.5" />
                   示例
                 </Button>
               </div>
@@ -382,113 +385,109 @@ export default function CryptoPage() {
             </DialogContent>
           </Dialog>
 
-          {/* 密钥输入 */}
-          <Card className="p-4">
-            <h3 className="font-semibold mb-3">密钥</h3>
+          {/* 密钥输入 - 紧凑版 */}
+          <Card className="p-3">
+            <div className="flex items-center gap-2 mb-2">
+              <h3 className="font-semibold text-sm">密钥</h3>
+              <span className="text-xs text-muted-foreground">请妥善保管密钥</span>
+            </div>
             <div className="flex gap-2">
               <Input
                 value={aesKey}
                 onChange={(e) => setAesKey(e.target.value)}
                 placeholder="请输入密钥..."
-                className="font-mono flex-1"
+                className="font-mono flex-1 h-9"
                 type={showAesKey ? 'text' : 'password'}
               />
               <Button
                 variant="ghost"
-                size="icon"
+                size="sm"
                 onClick={() => setShowAesKey(!showAesKey)}
                 title={showAesKey ? '隐藏密钥' : '显示密钥'}
+                className="h-9 w-9 p-0"
               >
                 {showAesKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </Button>
               <CopyButton text={aesKey} />
             </div>
-            <p className="text-xs text-muted-foreground mt-2">
-              提示：请妥善保管密钥，丢失后将无法解密
-            </p>
           </Card>
 
-          {/* 输入输出区域 */}
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-4 items-start">
+          {/* 输入输出区域 - 优化空间 */}
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-3 items-start">
             {/* 左侧：加密 */}
-            <Card className="p-4">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="font-semibold">加密</h3>
-                <Button onClick={handleAesEncrypt} size="sm" className="gap-2">
-                  <Lock className="h-4 w-4" />
+            <Card className="p-3">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <h3 className="font-semibold text-sm">明文输入</h3>
+                  <span className="text-xs text-muted-foreground">{aesInput.length} 字符</span>
+                </div>
+                <Button onClick={handleAesEncrypt} size="sm" className="gap-1.5 h-8">
+                  <Lock className="h-3.5 w-3.5" />
                   加密
                 </Button>
-              </div>
-              <div className="mb-3">
-                <label className="text-sm font-medium mb-2 block">明文输入</label>
-                <div className="text-sm text-muted-foreground mb-2">
-                  {aesInput.length} 字符
-                </div>
               </div>
               <MonacoEditor
                 value={aesInput}
                 onChange={setAesInput}
                 placeholder="请输入要加密的内容..."
-                minHeight="400px"
-                maxHeight="600px"
+                minHeight="500px"
+                maxHeight="70vh"
               />
             </Card>
 
             {/* 中间箭头（仅视觉指示） */}
-            <div className="flex items-center justify-center lg:pt-[60px]">
-              <div className="h-10 w-10 flex items-center justify-center text-muted-foreground">
-                <ArrowLeftRight className="h-5 w-5" />
+            <div className="flex items-center justify-center lg:pt-[40px]">
+              <div className="h-8 w-8 flex items-center justify-center text-muted-foreground">
+                <ArrowLeftRight className="h-4 w-4" />
               </div>
             </div>
 
             {/* 右侧：解密 */}
-            <Card className="p-4">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="font-semibold">解密</h3>
-                <Button onClick={handleAesDecrypt} size="sm" variant="secondary" className="gap-2">
-                  <Unlock className="h-4 w-4" />
-                  解密
-                </Button>
-              </div>
-              <div className="mb-3">
-                <label className="text-sm font-medium mb-2 block">密文输出</label>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm text-muted-foreground">
-                    {aesOutput.length} 字符
-                  </span>
+            <Card className="p-3">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <h3 className="font-semibold text-sm">密文输出</h3>
+                  <span className="text-xs text-muted-foreground">{aesOutput.length} 字符</span>
+                </div>
+                <div className="flex items-center gap-1">
                   {aesOutput && <CopyButton text={aesOutput} />}
+                  <Button onClick={handleAesDecrypt} size="sm" variant="secondary" className="gap-1.5 h-8">
+                    <Unlock className="h-3.5 w-3.5" />
+                    解密
+                  </Button>
                 </div>
               </div>
               <MonacoEditor
                 value={aesOutput}
                 onChange={setAesOutput}
                 placeholder="处理结果将显示在这里..."
-                minHeight="400px"
-                maxHeight="600px"
+                minHeight="500px"
+                maxHeight="70vh"
               />
             </Card>
           </div>
         </TabsContent>
 
         {/* RSA 加密解密 */}
-        <TabsContent value="rsa" className="space-y-4">
-          {/* 工具栏 */}
-          <Card className="p-4">
+        <TabsContent value="rsa" className="space-y-3">
+          {/* 工具栏 - 紧凑版 */}
+          <Card className="p-3">
             <div className="flex flex-wrap gap-2">
               <Button
                 onClick={() => setShowRsaKeyManager(!showRsaKeyManager)}
                 variant="outline"
-                className="gap-2"
+                size="sm"
+                className="gap-1.5"
               >
-                <Key className="h-4 w-4" />
+                <Key className="h-3.5 w-3.5" />
                 密钥管理
               </Button>
-              <Button onClick={handleClearRsa} variant="ghost" className="gap-2">
-                <RotateCcw className="h-4 w-4" />
+              <Button onClick={handleClearRsa} variant="ghost" size="sm" className="gap-1.5">
+                <RotateCcw className="h-3.5 w-3.5" />
                 清空
               </Button>
-              <Button onClick={handleRsaExample} variant="ghost" className="gap-2">
-                <Wand2 className="h-4 w-4" />
+              <Button onClick={handleRsaExample} variant="ghost" size="sm" className="gap-1.5">
+                <Wand2 className="h-3.5 w-3.5" />
                 示例
               </Button>
             </div>
@@ -510,60 +509,55 @@ export default function CryptoPage() {
             </DialogContent>
           </Dialog>
 
-          {/* 密钥状态提示 */}
-          <Card className="p-4">
+          {/* 密钥状态提示 - 紧凑版 */}
+          <Card className="p-3">
             <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <h3 className="font-semibold">密钥状态</h3>
-                <div className="flex gap-4 text-sm">
-                  <span className={rsaPublicKey ? 'text-green-600 dark:text-green-400' : 'text-muted-foreground'}>
-                    公钥: {rsaPublicKey ? '✓ 已加载' : '✗ 未加载'}
-                  </span>
-                  <span className={rsaPrivateKey ? 'text-green-600 dark:text-green-400' : 'text-muted-foreground'}>
-                    私钥: {rsaPrivateKey ? '✓ 已加载' : '✗ 未加载'}
-                  </span>
-                </div>
+              <div className="flex gap-4 text-sm items-center">
+                <span className="text-sm font-semibold">密钥状态:</span>
+                <span className={rsaPublicKey ? 'text-green-600 dark:text-green-400' : 'text-muted-foreground'}>
+                  公钥: {rsaPublicKey ? '✓ 已加载' : '✗ 未加载'}
+                </span>
+                <span className={rsaPrivateKey ? 'text-green-600 dark:text-green-400' : 'text-muted-foreground'}>
+                  私钥: {rsaPrivateKey ? '✓ 已加载' : '✗ 未加载'}
+                </span>
               </div>
               <Button
                 onClick={() => setShowRsaKeyManager(true)}
                 variant="outline"
                 size="sm"
-                className="gap-2"
+                className="gap-1.5 h-8"
               >
-                <Key className="h-4 w-4" />
+                <Key className="h-3.5 w-3.5" />
                 管理密钥
               </Button>
             </div>
           </Card>
 
-          {/* 输入输出区域 */}
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-4 items-start">
+          {/* 输入输出区域 - 优化空间 */}
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-3 items-start">
             {/* 左侧：加密 */}
-            <Card className="p-4">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="font-semibold">加密</h3>
+            <Card className="p-3">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <h3 className="font-semibold text-sm">明文输入</h3>
+                  <span className="text-xs text-muted-foreground">{rsaPlaintext.length} 字符</span>
+                </div>
                 <Button
                   onClick={handleRsaEncrypt}
                   size="sm"
-                  className="gap-2"
+                  className="gap-1.5 h-8"
                   disabled={!rsaPublicKey}
                 >
-                  <Lock className="h-4 w-4" />
+                  <Lock className="h-3.5 w-3.5" />
                   加密
                 </Button>
-              </div>
-              <div className="mb-3">
-                <label className="text-sm font-medium mb-2 block">明文输入</label>
-                <div className="text-sm text-muted-foreground mb-2">
-                  {rsaPlaintext.length} 字符
-                </div>
               </div>
               <MonacoEditor
                 value={rsaPlaintext}
                 onChange={setRsaPlaintext}
                 placeholder="请输入要加密的内容..."
-                minHeight="400px"
-                maxHeight="600px"
+                minHeight="500px"
+                maxHeight="70vh"
               />
               {!rsaPublicKey && (
                 <p className="text-xs text-amber-600 dark:text-amber-400 mt-2">
@@ -573,42 +567,39 @@ export default function CryptoPage() {
             </Card>
 
             {/* 中间箭头 */}
-            <div className="flex items-center justify-center lg:pt-[60px]">
-              <div className="h-10 w-10 flex items-center justify-center text-muted-foreground">
-                <ArrowLeftRight className="h-5 w-5" />
+            <div className="flex items-center justify-center lg:pt-[40px]">
+              <div className="h-8 w-8 flex items-center justify-center text-muted-foreground">
+                <ArrowLeftRight className="h-4 w-4" />
               </div>
             </div>
 
             {/* 右侧：解密 */}
-            <Card className="p-4">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="font-semibold">解密</h3>
-                <Button
-                  onClick={handleRsaDecrypt}
-                  size="sm"
-                  variant="secondary"
-                  className="gap-2"
-                  disabled={!rsaPrivateKey}
-                >
-                  <Unlock className="h-4 w-4" />
-                  解密
-                </Button>
-              </div>
-              <div className="mb-3">
-                <label className="text-sm font-medium mb-2 block">密文输出</label>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm text-muted-foreground">
-                    {rsaCiphertext.length} 字符
-                  </span>
+            <Card className="p-3">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <h3 className="font-semibold text-sm">密文输出</h3>
+                  <span className="text-xs text-muted-foreground">{rsaCiphertext.length} 字符</span>
+                </div>
+                <div className="flex items-center gap-1">
                   {rsaCiphertext && <CopyButton text={rsaCiphertext} />}
+                  <Button
+                    onClick={handleRsaDecrypt}
+                    size="sm"
+                    variant="secondary"
+                    className="gap-1.5 h-8"
+                    disabled={!rsaPrivateKey}
+                  >
+                    <Unlock className="h-3.5 w-3.5" />
+                    解密
+                  </Button>
                 </div>
               </div>
               <MonacoEditor
                 value={rsaCiphertext}
                 onChange={setRsaCiphertext}
                 placeholder="处理结果将显示在这里..."
-                minHeight="400px"
-                maxHeight="600px"
+                minHeight="500px"
+                maxHeight="70vh"
               />
               {!rsaPrivateKey && (
                 <p className="text-xs text-amber-600 dark:text-amber-400 mt-2">
@@ -620,49 +611,52 @@ export default function CryptoPage() {
         </TabsContent>
 
         {/* 哈希计算 */}
-        <TabsContent value="hash" className="space-y-4">
-          {/* 工具栏 */}
-          <Card className="p-4">
+        <TabsContent value="hash" className="space-y-3">
+          {/* 工具栏 - 紧凑版 */}
+          <Card className="p-3">
             <div className="flex flex-wrap gap-2">
-              <Button onClick={handleCalculateHash} className="gap-2">
-                <Hash className="h-4 w-4" />
+              <Button onClick={handleCalculateHash} size="sm" className="gap-1.5">
+                <Hash className="h-3.5 w-3.5" />
                 计算哈希
               </Button>
-              <Button onClick={handleClearHash} variant="ghost" className="gap-2">
-                <RotateCcw className="h-4 w-4" />
+              <Button onClick={handleClearHash} variant="ghost" size="sm" className="gap-1.5">
+                <RotateCcw className="h-3.5 w-3.5" />
                 清空
               </Button>
-              <Button onClick={handleHashExample} variant="ghost" className="gap-2">
-                <Wand2 className="h-4 w-4" />
+              <Button onClick={handleHashExample} variant="ghost" size="sm" className="gap-1.5">
+                <Wand2 className="h-3.5 w-3.5" />
                 示例
               </Button>
             </div>
           </Card>
 
-          {/* 输入区 */}
-          <Card className="p-4">
-            <h3 className="font-semibold mb-3">输入内容</h3>
+          {/* 输入区 - 更大空间 */}
+          <Card className="p-3">
+            <div className="flex items-center gap-2 mb-2">
+              <h3 className="font-semibold text-sm">输入内容</h3>
+              <span className="text-xs text-muted-foreground">{hashInput.length} 字符</span>
+            </div>
             <MonacoEditor
               value={hashInput}
               onChange={setHashInput}
               placeholder="请输入要计算哈希的内容..."
-              minHeight="200px"
-              maxHeight="400px"
+              minHeight="400px"
+              maxHeight="60vh"
             />
           </Card>
 
-          {/* 哈希结果 */}
+          {/* 哈希结果 - 紧凑版 */}
           {Object.keys(hashResults).length > 0 && (
-            <Card className="p-4">
-              <h3 className="font-semibold mb-3">哈希结果</h3>
-              <div className="space-y-3">
+            <Card className="p-3">
+              <h3 className="font-semibold text-sm mb-3">哈希结果</h3>
+              <div className="space-y-2">
                 {Object.entries(hashResults).map(([algorithm, hash]) => (
                   <div key={algorithm} className="space-y-1">
                     <div className="flex items-center justify-between">
                       <div className="text-sm font-medium">{algorithm}</div>
                       <CopyButton text={hash} />
                     </div>
-                    <div className="p-3 bg-muted/30 rounded-lg font-mono text-xs break-all">
+                    <div className="p-2.5 bg-muted/30 rounded-lg font-mono text-xs break-all">
                       {hash}
                     </div>
                   </div>
@@ -673,28 +667,29 @@ export default function CryptoPage() {
         </TabsContent>
 
         {/* HMAC */}
-        <TabsContent value="hmac" className="space-y-4">
-          {/* 工具栏 */}
-          <Card className="p-4">
+        <TabsContent value="hmac" className="space-y-3">
+          {/* 工具栏 - 紧凑版 */}
+          <Card className="p-3">
             <div className="flex flex-wrap gap-2">
-              <Button onClick={handleCalculateHmac} className="gap-2">
-                <Key className="h-4 w-4" />
+              <Button onClick={handleCalculateHmac} size="sm" className="gap-1.5">
+                <Key className="h-3.5 w-3.5" />
                 计算 HMAC
               </Button>
               <Button
                 onClick={() => setShowHmacKeyGenerator(!showHmacKeyGenerator)}
                 variant="outline"
-                className="gap-2"
+                size="sm"
+                className="gap-1.5"
               >
-                <Key className="h-4 w-4" />
+                <Key className="h-3.5 w-3.5" />
                 生成密钥
               </Button>
-              <Button onClick={handleClearHmac} variant="ghost" className="gap-2">
-                <RotateCcw className="h-4 w-4" />
+              <Button onClick={handleClearHmac} variant="ghost" size="sm" className="gap-1.5">
+                <RotateCcw className="h-3.5 w-3.5" />
                 清空
               </Button>
-              <Button onClick={handleHmacExample} variant="ghost" className="gap-2">
-                <Wand2 className="h-4 w-4" />
+              <Button onClick={handleHmacExample} variant="ghost" size="sm" className="gap-1.5">
+                <Wand2 className="h-3.5 w-3.5" />
                 示例
               </Button>
             </div>
@@ -718,44 +713,49 @@ export default function CryptoPage() {
             </DialogContent>
           </Dialog>
 
-          {/* 密钥输入 */}
-          <Card className="p-4">
-            <h3 className="font-semibold mb-3">密钥</h3>
+          {/* 密钥输入 - 紧凑版 */}
+          <Card className="p-3">
+            <div className="flex items-center gap-2 mb-2">
+              <h3 className="font-semibold text-sm">密钥</h3>
+            </div>
             <div className="flex gap-2">
               <Input
                 value={hmacKey}
                 onChange={(e) => setHmacKey(e.target.value)}
                 placeholder="请输入密钥..."
-                className="font-mono flex-1"
+                className="font-mono flex-1 h-9"
               />
               <CopyButton text={hmacKey} />
             </div>
           </Card>
 
-          {/* 输入区 */}
-          <Card className="p-4">
-            <h3 className="font-semibold mb-3">输入内容</h3>
+          {/* 输入区 - 更大空间 */}
+          <Card className="p-3">
+            <div className="flex items-center gap-2 mb-2">
+              <h3 className="font-semibold text-sm">输入内容</h3>
+              <span className="text-xs text-muted-foreground">{hmacInput.length} 字符</span>
+            </div>
             <MonacoEditor
               value={hmacInput}
               onChange={setHmacInput}
               placeholder="请输入要计算 HMAC 的内容..."
-              minHeight="200px"
-              maxHeight="400px"
+              minHeight="400px"
+              maxHeight="60vh"
             />
           </Card>
 
-          {/* HMAC 结果 */}
+          {/* HMAC 结果 - 紧凑版 */}
           {Object.keys(hmacResults).length > 0 && (
-            <Card className="p-4">
-              <h3 className="font-semibold mb-3">HMAC 结果</h3>
-              <div className="space-y-3">
+            <Card className="p-3">
+              <h3 className="font-semibold text-sm mb-3">HMAC 结果</h3>
+              <div className="space-y-2">
                 {Object.entries(hmacResults).map(([algorithm, hmac]) => (
                   <div key={algorithm} className="space-y-1">
                     <div className="flex items-center justify-between">
                       <div className="text-sm font-medium">{algorithm}</div>
                       <CopyButton text={hmac} />
                     </div>
-                    <div className="p-3 bg-muted/30 rounded-lg font-mono text-xs break-all">
+                    <div className="p-2.5 bg-muted/30 rounded-lg font-mono text-xs break-all">
                       {hmac}
                     </div>
                   </div>
@@ -766,53 +766,55 @@ export default function CryptoPage() {
         </TabsContent>
       </Tabs>
 
-      {/* 使用说明 */}
-      <Card className="p-6">
-        <h3 className="font-semibold mb-3">使用说明</h3>
-        <div className="space-y-2 text-sm text-muted-foreground">
-          <p><strong>AES 加密：</strong></p>
-          <p>• AES (Advanced Encryption Standard) 是一种对称加密算法</p>
-          <p>• 加密和解密使用相同的密钥</p>
-          <p>• 点击中间的箭头按钮可切换加密/解密方向</p>
-          <p>• 勾选"实时转换"后，输入框内容变化时自动转换</p>
-          <p>• 请妥善保管密钥，丢失后将无法解密</p>
-          
-          <p className="mt-4"><strong>RSA 加密：</strong></p>
-          <p>• RSA 是一种非对称加密算法，使用公钥加密、私钥解密</p>
-          <p>• 支持 1024、2048、3072、4096 位密钥长度（推荐 2048 位或更高）</p>
-          <p>• 公钥可以公开分享，用于加密数据</p>
-          <p>• 私钥必须保密，用于解密数据</p>
-          <p>• 支持从文件导入密钥或直接粘贴密钥文本</p>
-          <p>• 生成的密钥可以导出为 .pem 文件或复制到剪贴板</p>
-          <p>• RSA 适合加密少量数据，大量数据建议使用 AES</p>
-          
-          <p className="mt-4"><strong>哈希计算：</strong></p>
-          <p>• 哈希是单向加密，无法解密</p>
-          <p>• 常用于密码存储、文件校验等场景</p>
-          <p>• 支持 MD5、SHA-1、SHA-256、SHA-512 等算法</p>
-          
-          <p className="mt-4"><strong>HMAC：</strong></p>
-          <p>• HMAC (Hash-based Message Authentication Code)</p>
-          <p>• 用于验证消息的完整性和真实性</p>
-          <p>• 需要提供密钥进行计算</p>
-          
-          <p className="mt-4 text-amber-600 dark:text-amber-400">
-            <strong>⚠️ 安全提示：</strong>
-          </p>
-          <p className="text-amber-600 dark:text-amber-400">
-            • 所有加密操作都在本地浏览器中完成，不会上传到服务器
-          </p>
-          <p className="text-amber-600 dark:text-amber-400">
-            • 请勿在生产环境中使用简单密钥或低位数的 RSA 密钥
-          </p>
-          <p className="text-amber-600 dark:text-amber-400">
-            • RSA 私钥非常重要，请务必妥善保管，不要泄露
-          </p>
-          <p className="text-amber-600 dark:text-amber-400">
-            • MD5 和 SHA-1 已不够安全，建议使用 SHA-256 或更高级别
-          </p>
-        </div>
-      </Card>
+      {/* 使用说明 - 可折叠或更紧凑 */}
+      <details className="group">
+        <summary className="cursor-pointer list-none">
+          <Card className="p-3 hover:bg-muted/30 transition-colors">
+            <div className="flex items-center justify-between">
+              <h3 className="font-semibold text-sm">使用说明</h3>
+              <span className="text-muted-foreground group-open:rotate-180 transition-transform">▼</span>
+            </div>
+          </Card>
+        </summary>
+        <Card className="p-4 mt-2">
+          <div className="grid md:grid-cols-2 gap-4 text-sm text-muted-foreground">
+            <div>
+              <p className="font-semibold text-foreground mb-2">AES 加密</p>
+              <p>• 对称加密算法，加解密使用相同密钥</p>
+              <p>• 支持实时转换功能</p>
+              <p>• 请妥善保管密钥</p>
+            </div>
+            
+            <div>
+              <p className="font-semibold text-foreground mb-2">RSA 加密</p>
+              <p>• 非对称加密，公钥加密、私钥解密</p>
+              <p>• 推荐 2048 位或更高密钥长度</p>
+              <p>• 适合加密少量数据</p>
+            </div>
+            
+            <div>
+              <p className="font-semibold text-foreground mb-2">哈希计算</p>
+              <p>• 单向加密，无法解密</p>
+              <p>• 用于密码存储、文件校验</p>
+              <p>• 建议使用 SHA-256 或更高级别</p>
+            </div>
+            
+            <div>
+              <p className="font-semibold text-foreground mb-2">HMAC</p>
+              <p>• 基于哈希的消息认证码</p>
+              <p>• 验证消息完整性和真实性</p>
+              <p>• 需要密钥进行计算</p>
+            </div>
+            
+            <div className="md:col-span-2 text-amber-600 dark:text-amber-400">
+              <p className="font-semibold mb-2">⚠️ 安全提示</p>
+              <p>• 所有加密操作在本地浏览器完成，不会上传服务器</p>
+              <p>• 请勿在生产环境使用简单密钥或低位数 RSA 密钥</p>
+              <p>• RSA 私钥务必妥善保管，不要泄露</p>
+            </div>
+          </div>
+        </Card>
+      </details>
     </div>
   );
 }
