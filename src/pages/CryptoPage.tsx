@@ -10,7 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { CodeEditor } from '@/components/common/CodeEditor';
+import { MonacoEditor } from '@/components/common/MonacoEditor';
 import { CopyButton } from '@/components/common/CopyButton';
 import { KeyGenerator } from '@/components/crypto/KeyGenerator';
 import { RsaKeyManager } from '@/components/crypto/RsaKeyManager';
@@ -425,7 +425,7 @@ export default function CryptoPage() {
                   {aesInput.length} 字符
                 </div>
               </div>
-              <CodeEditor
+              <MonacoEditor
                 value={aesInput}
                 onChange={setAesInput}
                 placeholder="请输入要加密的内容..."
@@ -459,7 +459,7 @@ export default function CryptoPage() {
                   {aesOutput && <CopyButton text={aesOutput} />}
                 </div>
               </div>
-              <CodeEditor
+              <MonacoEditor
                 value={aesOutput}
                 onChange={setAesOutput}
                 placeholder="处理结果将显示在这里..."
@@ -559,7 +559,7 @@ export default function CryptoPage() {
                   {rsaPlaintext.length} 字符
                 </div>
               </div>
-              <CodeEditor
+              <MonacoEditor
                 value={rsaPlaintext}
                 onChange={setRsaPlaintext}
                 placeholder="请输入要加密的内容..."
@@ -604,12 +604,11 @@ export default function CryptoPage() {
                   {rsaCiphertext && <CopyButton text={rsaCiphertext} />}
                 </div>
               </div>
-              <CodeEditor
+              <MonacoEditor
                 value={rsaCiphertext}
                 onChange={setRsaCiphertext}
                 placeholder="处理结果将显示在这里..."
                 readOnly
-                wrap={true}
                 minHeight="400px"
                 maxHeight="600px"
               />
@@ -645,7 +644,7 @@ export default function CryptoPage() {
           {/* 输入区 */}
           <Card className="p-4">
             <h3 className="font-semibold mb-3">输入内容</h3>
-            <CodeEditor
+            <MonacoEditor
               value={hashInput}
               onChange={setHashInput}
               placeholder="请输入要计算哈希的内容..."
@@ -738,7 +737,7 @@ export default function CryptoPage() {
           {/* 输入区 */}
           <Card className="p-4">
             <h3 className="font-semibold mb-3">输入内容</h3>
-            <CodeEditor
+            <MonacoEditor
               value={hmacInput}
               onChange={setHmacInput}
               placeholder="请输入要计算 HMAC 的内容..."
