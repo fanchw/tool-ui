@@ -19,7 +19,7 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <BrowserRouter>
+      <BrowserRouter basename="/tool-ui">
         <AppRouter />
         <Toaster
           position="top-center"
