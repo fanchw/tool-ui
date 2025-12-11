@@ -13,6 +13,7 @@ import {
 import { CodeEditor } from '@/components/common/CodeEditor';
 import { CopyButton } from '@/components/common/CopyButton';
 import { KeyGenerator } from '@/components/crypto/KeyGenerator';
+import { RsaKeyManager } from '@/components/crypto/RsaKeyManager';
 import {
   Lock,
   Unlock,
@@ -22,9 +23,11 @@ import {
   Wand2,
   Eye,
   EyeOff,
-  ArrowLeftRight
+  ArrowLeftRight,
+  Shield
 } from 'lucide-react';
 import CryptoJS from 'crypto-js';
+import JSEncrypt from 'jsencrypt';
 import toast from 'react-hot-toast';
 
 export default function CryptoPage() {
@@ -51,6 +54,13 @@ export default function CryptoPage() {
   const [hmacKey, setHmacKey] = useState('');
   const [hmacResults, setHmacResults] = useState<Record<string, string>>({});
   const [showHmacKeyGenerator, setShowHmacKeyGenerator] = useState(false);
+
+  // RSA
+  const [rsaPublicKey, setRsaPublicKey] = useState('');
+  const [rsaPrivateKey, setRsaPrivateKey] = useState('');
+  const [rsaPlaintext, setRsaPlaintext] = useState('');
+  const [rsaCiphertext, setRsaCiphertext] = useState('');
+  const [showRsaKeyManager, setShowRsaKeyManager] = useState(false);
 
   // AES 实时转换效果 - 加密
   useEffect(() => {
@@ -213,6 +223,75 @@ export default function CryptoPage() {
     setHmacKey('my-secret-key');
   };
 
+  // RSA 加密
+  const handleRsaEncrypt = () => {
+    try {
+      if (!rsaPlaintext.trim()) {
+        toast.error('请输入要加密的内容');
+        return;
+      }
+      if (!rsaPublicKey.trim()) {
+        toast.error('请先生成或导入公钥');
+        return;
+      }
+
+      const encrypt = new JSEncrypt();
+      encrypt.setPublicKey(rsaPublicKey);
+      const encrypted = encrypt.encrypt(rsaPlaintext);
+
+      if (!encrypted) {
+        toast.error('加密失败，请检查公钥是否正确');
+        return;
+      }
+
+      setRsaCiphertext(encrypted);
+      toast.success('加密成功');
+    } catch (error) {
+      toast.error('加密失败');
+      console.error('RSA encrypt error:', error);
+    }
+  };
+
+  // RSA 解密
+  const handleRsaDecrypt = () => {
+    try {
+      if (!rsaCiphertext.trim()) {
+        toast.error('请输入要解密的内容');
+        return;
+      }
+      if (!rsaPrivateKey.trim()) {
+        toast.error('请先生成或导入私钥');
+        return;
+      }
+
+      const decrypt = new JSEncrypt();
+      decrypt.setPrivateKey(rsaPrivateKey);
+      const decrypted = decrypt.decrypt(rsaCiphertext);
+
+      if (!decrypted) {
+        toast.error('解密失败，请检查私钥是否正确');
+        return;
+      }
+
+      setRsaPlaintext(decrypted);
+      toast.success('解密成功');
+    } catch (error) {
+      toast.error('解密失败');
+      console.error('RSA decrypt error:', error);
+    }
+  };
+
+  // 清空 RSA
+  const handleClearRsa = () => {
+    setRsaPlaintext('');
+    setRsaCiphertext('');
+  };
+
+  // RSA 示例
+  const handleRsaExample = () => {
+    setRsaPlaintext('Hello, 这是一个RSA加密示例！');
+  };
+
   return (
     <div className="space-y-6">
       {/* 页面标题 */}
@@ -228,10 +307,14 @@ export default function CryptoPage() {
 
       {/* 标签页 */}
       <Tabs defaultValue="aes" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="aes" className="gap-2">
             <Lock className="h-4 w-4" />
             AES 加密
+          </TabsTrigger>
+          <TabsTrigger value="rsa" className="gap-2">
+            <Shield className="h-4 w-4" />
+            RSA 加密
           </TabsTrigger>
           <TabsTrigger value="hash" className="gap-2">
             <Hash className="h-4 w-4" />
@@ -384,6 +467,157 @@ export default function CryptoPage() {
                 minHeight="400px"
                 maxHeight="600px"
               />
+            </Card>
+          </div>
+        </TabsContent>
+
+        {/* RSA 加密解密 */}
+        <TabsContent value="rsa" className="space-y-4">
+          {/* 工具栏 */}
+          <Card className="p-4">
+            <div className="flex flex-wrap gap-2">
+              <Button
+                onClick={() => setShowRsaKeyManager(!showRsaKeyManager)}
+                variant="outline"
+                className="gap-2"
+              >
+                <Key className="h-4 w-4" />
+                密钥管理
+              </Button>
+              <Button onClick={handleClearRsa} variant="ghost" className="gap-2">
+                <RotateCcw className="h-4 w-4" />
+                清空
+              </Button>
+              <Button onClick={handleRsaExample} variant="ghost" className="gap-2">
+                <Wand2 className="h-4 w-4" />
+                示例
+              </Button>
+            </div>
+          </Card>
+
+          {/* RSA密钥管理器 Dialog */}
+          <Dialog open={showRsaKeyManager} onOpenChange={setShowRsaKeyManager}>
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>RSA 密钥管理</DialogTitle>
+                <DialogDescription>
+                  生成、导入或导出 RSA 公钥和私钥
+                </DialogDescription>
+              </DialogHeader>
+              <RsaKeyManager
+                onPublicKeyChange={setRsaPublicKey}
+                onPrivateKeyChange={setRsaPrivateKey}
+              />
+            </DialogContent>
+          </Dialog>
+
+          {/* 密钥状态提示 */}
+          <Card className="p-4">
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <h3 className="font-semibold">密钥状态</h3>
+                <div className="flex gap-4 text-sm">
+                  <span className={rsaPublicKey ? 'text-green-600 dark:text-green-400' : 'text-muted-foreground'}>
+                    公钥: {rsaPublicKey ? '✓ 已加载' : '✗ 未加载'}
+                  </span>
+                  <span className={rsaPrivateKey ? 'text-green-600 dark:text-green-400' : 'text-muted-foreground'}>
+                    私钥: {rsaPrivateKey ? '✓ 已加载' : '✗ 未加载'}
+                  </span>
+                </div>
+              </div>
+              <Button
+                onClick={() => setShowRsaKeyManager(true)}
+                variant="outline"
+                size="sm"
+                className="gap-2"
+              >
+                <Key className="h-4 w-4" />
+                管理密钥
+              </Button>
+            </div>
+          </Card>
+
+          {/* 输入输出区域 */}
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-4 items-start">
+            {/* 左侧：加密 */}
+            <Card className="p-4">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold">加密</h3>
+                <Button
+                  onClick={handleRsaEncrypt}
+                  size="sm"
+                  className="gap-2"
+                  disabled={!rsaPublicKey}
+                >
+                  <Lock className="h-4 w-4" />
+                  加密
+                </Button>
+              </div>
+              <div className="mb-3">
+                <label className="text-sm font-medium mb-2 block">明文输入</label>
+                <div className="text-sm text-muted-foreground mb-2">
+                  {rsaPlaintext.length} 字符
+                </div>
+              </div>
+              <CodeEditor
+                value={rsaPlaintext}
+                onChange={setRsaPlaintext}
+                placeholder="请输入要加密的内容..."
+                minHeight="400px"
+                maxHeight="600px"
+              />
+              {!rsaPublicKey && (
+                <p className="text-xs text-amber-600 dark:text-amber-400 mt-2">
+                  ⚠️ 请先在密钥管理中生成或导入公钥
+                </p>
+              )}
+            </Card>
+
+            {/* 中间箭头 */}
+            <div className="flex items-center justify-center lg:pt-[60px]">
+              <div className="h-10 w-10 flex items-center justify-center text-muted-foreground">
+                <ArrowLeftRight className="h-5 w-5" />
+              </div>
+            </div>
+
+            {/* 右侧：解密 */}
+            <Card className="p-4">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold">解密</h3>
+                <Button
+                  onClick={handleRsaDecrypt}
+                  size="sm"
+                  variant="secondary"
+                  className="gap-2"
+                  disabled={!rsaPrivateKey}
+                >
+                  <Unlock className="h-4 w-4" />
+                  解密
+                </Button>
+              </div>
+              <div className="mb-3">
+                <label className="text-sm font-medium mb-2 block">密文输出</label>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm text-muted-foreground">
+                    {rsaCiphertext.length} 字符
+                  </span>
+                  {rsaCiphertext && <CopyButton text={rsaCiphertext} />}
+                </div>
+              </div>
+              <CodeEditor
+                value={rsaCiphertext}
+                onChange={setRsaCiphertext}
+                placeholder="处理结果将显示在这里..."
+                readOnly
+                wrap={true}
+                minHeight="400px"
+                maxHeight="600px"
+              />
+              {!rsaPrivateKey && (
+                <p className="text-xs text-amber-600 dark:text-amber-400 mt-2">
+                  ⚠️ 请先在密钥管理中生成或导入私钥
+                </p>
+              )}
             </Card>
           </div>
         </TabsContent>
@@ -546,6 +780,15 @@ export default function CryptoPage() {
           <p>• 勾选"实时转换"后，输入框内容变化时自动转换</p>
           <p>• 请妥善保管密钥，丢失后将无法解密</p>
           
+          <p className="mt-4"><strong>RSA 加密：</strong></p>
+          <p>• RSA 是一种非对称加密算法，使用公钥加密、私钥解密</p>
+          <p>• 支持 1024、2048、3072、4096 位密钥长度（推荐 2048 位或更高）</p>
+          <p>• 公钥可以公开分享，用于加密数据</p>
+          <p>• 私钥必须保密，用于解密数据</p>
+          <p>• 支持从文件导入密钥或直接粘贴密钥文本</p>
+          <p>• 生成的密钥可以导出为 .pem 文件或复制到剪贴板</p>
+          <p>• RSA 适合加密少量数据，大量数据建议使用 AES</p>
+          
           <p className="mt-4"><strong>哈希计算：</strong></p>
           <p>• 哈希是单向加密，无法解密</p>
           <p>• 常用于密码存储、文件校验等场景</p>
@@ -563,7 +806,10 @@ export default function CryptoPage() {
             • 所有加密操作都在本地浏览器中完成，不会上传到服务器
           </p>
           <p className="text-amber-600 dark:text-amber-400">
-            • 请勿在生产环境中使用简单密钥
+            • 请勿在生产环境中使用简单密钥或低位数的 RSA 密钥
+          </p>
+          <p className="text-amber-600 dark:text-amber-400">
+            • RSA 私钥非常重要，请务必妥善保管，不要泄露
           </p>
           <p className="text-amber-600 dark:text-amber-400">
             • MD5 和 SHA-1 已不够安全，建议使用 SHA-256 或更高级别

@@ -11,6 +11,7 @@ interface CodeEditorProps {
   readOnly?: boolean;
   minHeight?: string;
   maxHeight?: string;
+  wrap?: boolean; // 是否自动换行
 }
 
 export function CodeEditor({
@@ -22,6 +23,7 @@ export function CodeEditor({
   readOnly = false,
   minHeight = '200px',
   maxHeight = '600px',
+  wrap = false, // 默认不换行
 }: CodeEditorProps) {
   const { theme } = useThemeStore();
 
@@ -62,6 +64,8 @@ export function CodeEditor({
           borderRadius: '0.375rem',
           border: '1px solid',
           borderColor: currentTheme.borderColor,
+          whiteSpace: wrap ? 'pre-wrap' : 'pre',
+          wordBreak: wrap ? 'break-all' : 'normal',
         }}
         className={cn(
           'scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent',
