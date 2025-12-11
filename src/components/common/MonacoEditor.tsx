@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import Editor, { OnMount } from '@monaco-editor/react';
 import { useThemeStore } from '@/store/useThemeStore';
 import { cn } from '@/lib/utils';
@@ -27,6 +27,7 @@ export function MonacoEditor({
   const { theme } = useThemeStore();
   const editorRef = useRef<any>(null);
   const [isFocused, setIsFocused] = useState(false);
+  const [contentLeft, setContentLeft] = useState(62); // 默认值
 
   const handleEditorDidMount: OnMount = (editor, monaco) => {
     editorRef.current = editor;
@@ -58,6 +59,21 @@ export function MonacoEditor({
 
     editor.onDidBlurEditorText(() => {
       setIsFocused(false);
+    });
+
+    // 获取行号区域的宽度
+    const updateContentLeft = () => {
+      const layoutInfo = editor.getLayoutInfo();
+      // contentLeft 是内容区域的左边距（包括行号和边距）
+      setContentLeft(layoutInfo.contentLeft);
+    };
+
+    // 初始化时获取一次
+    updateContentLeft();
+
+    // 监听布局变化
+    editor.onDidLayoutChange(() => {
+      updateContentLeft();
     });
   };
 
@@ -106,12 +122,15 @@ export function MonacoEditor({
       />
       {!value && !isFocused && placeholder && (
         <div
-          className="absolute top-0 left-0 right-0 bottom-0 pointer-events-none flex items-start pt-[10px] pl-[60px]"
+          className="absolute top-0 left-0 right-0 bottom-0 pointer-events-none"
           style={{ zIndex: 1 }}
         >
-          <span className="text-muted-foreground text-sm opacity-50">
+          <div
+            className="pt-[10px] text-muted-foreground text-sm opacity-50"
+            style={{ paddingLeft: `${contentLeft}px` }}
+          >
             {placeholder}
-          </span>
+          </div>
         </div>
       )}
     </div>
