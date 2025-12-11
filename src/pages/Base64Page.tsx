@@ -168,16 +168,18 @@ export default function Base64Page() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* 页面标题 */}
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <FileCode2 className="h-8 w-8" />
-          Base64 编解码
-        </h1>
-        <p className="text-muted-foreground mt-2">
-          Base64 编码解码工具，支持文本和图片
-        </p>
+    <div className="space-y-4">
+      {/* 页面标题 - 紧凑版 */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold flex items-center gap-2">
+            <FileCode2 className="h-6 w-6" />
+            Base64 编解码
+          </h1>
+          <p className="text-muted-foreground text-sm mt-1">
+            Base64 编码解码工具，支持文本和图片
+          </p>
+        </div>
       </div>
 
       {/* 标签页 */}
@@ -194,17 +196,17 @@ export default function Base64Page() {
         </TabsList>
 
         {/* 文本编解码 */}
-        <TabsContent value="text" className="space-y-4">
-          {/* 工具栏 */}
-          <Card className="p-4">
-            <div className="flex flex-wrap gap-4 items-center">
+        <TabsContent value="text" className="space-y-3">
+          {/* 工具栏 - 紧凑版 */}
+          <Card className="p-3">
+            <div className="flex flex-wrap gap-2 items-center justify-between">
               <div className="flex gap-2">
-                <Button onClick={handleClearText} variant="ghost" className="gap-2">
-                  <RotateCcw className="h-4 w-4" />
+                <Button onClick={handleClearText} variant="ghost" size="sm" className="gap-1.5">
+                  <RotateCcw className="h-3.5 w-3.5" />
                   清空
                 </Button>
-                <Button onClick={handleTextExample} variant="ghost" className="gap-2">
-                  <Wand2 className="h-4 w-4" />
+                <Button onClick={handleTextExample} variant="ghost" size="sm" className="gap-1.5">
+                  <Wand2 className="h-3.5 w-3.5" />
                   示例
                 </Button>
               </div>
@@ -223,90 +225,84 @@ export default function Base64Page() {
             </div>
           </Card>
 
-          {/* 输入输出区域 */}
-          <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-4 items-start">
+          {/* 输入输出区域 - 优化空间 */}
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-3 items-start">
             {/* 左侧：编码 */}
-            <Card className="p-4">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="font-semibold">编码</h3>
-                <Button onClick={handleEncode} size="sm" className="gap-2">
+            <Card className="p-3">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <h3 className="font-semibold text-sm">明文输入</h3>
+                  <span className="text-xs text-muted-foreground">{textInput.length} 字符</span>
+                </div>
+                <Button onClick={handleEncode} size="sm" className="gap-1.5 h-8">
                   编码
                 </Button>
-              </div>
-              <div className="mb-3">
-                <label className="text-sm font-medium mb-2 block">明文输入</label>
-                <div className="text-sm text-muted-foreground mb-2">
-                  {textInput.length} 字符
-                </div>
               </div>
               <CodeEditor
                 value={textInput}
                 onChange={setTextInput}
                 placeholder="请输入要编码的文本..."
-                minHeight="400px"
-                maxHeight="600px"
+                minHeight="500px"
+                maxHeight="70vh"
               />
             </Card>
 
             {/* 中间箭头（仅视觉指示） */}
-            <div className="flex items-center justify-center lg:pt-[60px]">
-              <div className="h-10 w-10 flex items-center justify-center text-muted-foreground">
-                <ArrowLeftRight className="h-5 w-5" />
+            <div className="flex items-center justify-center lg:pt-[40px]">
+              <div className="h-8 w-8 flex items-center justify-center text-muted-foreground">
+                <ArrowLeftRight className="h-4 w-4" />
               </div>
             </div>
 
             {/* 右侧：解码 */}
-            <Card className="p-4">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="font-semibold">解码</h3>
-                <Button onClick={handleDecode} size="sm" variant="secondary" className="gap-2">
-                  解码
-                </Button>
-              </div>
-              <div className="mb-3">
-                <label className="text-sm font-medium mb-2 block">密文输出</label>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm text-muted-foreground">
-                    {textOutput.length} 字符
-                  </span>
+            <Card className="p-3">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <h3 className="font-semibold text-sm">密文输出</h3>
+                  <span className="text-xs text-muted-foreground">{textOutput.length} 字符</span>
+                </div>
+                <div className="flex items-center gap-1">
                   {textOutput && <CopyButton text={textOutput} />}
+                  <Button onClick={handleDecode} size="sm" variant="secondary" className="gap-1.5 h-8">
+                    解码
+                  </Button>
                 </div>
               </div>
               <CodeEditor
                 value={textOutput}
                 onChange={setTextOutput}
                 placeholder="处理结果将显示在这里..."
-                readOnly
-                minHeight="400px"
-                maxHeight="600px"
+                minHeight="500px"
+                maxHeight="70vh"
               />
             </Card>
           </div>
         </TabsContent>
 
         {/* 图片处理 */}
-        <TabsContent value="image" className="space-y-4">
-          {/* 工具栏 */}
-          <Card className="p-4">
+        <TabsContent value="image" className="space-y-3">
+          {/* 工具栏 - 紧凑版 */}
+          <Card className="p-3">
             <div className="flex flex-wrap gap-2">
-              <Button onClick={handleSelectImage} className="gap-2">
-                <Upload className="h-4 w-4" />
+              <Button onClick={handleSelectImage} size="sm" className="gap-1.5">
+                <Upload className="h-3.5 w-3.5" />
                 选择图片
               </Button>
-              <Button onClick={handleLoadFromBase64} variant="secondary" className="gap-2">
+              <Button onClick={handleLoadFromBase64} variant="secondary" size="sm" className="gap-1.5">
                 从 Base64 加载
               </Button>
               <Button 
                 onClick={handleDownloadImage} 
                 variant="outline" 
-                className="gap-2"
+                size="sm"
+                className="gap-1.5"
                 disabled={!imageBase64}
               >
-                <Download className="h-4 w-4" />
+                <Download className="h-3.5 w-3.5" />
                 下载图片
               </Button>
-              <Button onClick={handleClearImage} variant="ghost" className="gap-2">
-                <RotateCcw className="h-4 w-4" />
+              <Button onClick={handleClearImage} variant="ghost" size="sm" className="gap-1.5">
+                <RotateCcw className="h-3.5 w-3.5" />
                 清空
               </Button>
             </div>
@@ -319,11 +315,11 @@ export default function Base64Page() {
             />
           </Card>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
             {/* 图片预览 */}
-            <Card className="p-4">
-              <h3 className="font-semibold mb-3">图片预览</h3>
-              <div className="border rounded-lg bg-muted/30 min-h-[400px] flex items-center justify-center">
+            <Card className="p-3">
+              <h3 className="font-semibold text-sm mb-2">图片预览</h3>
+              <div className="border rounded-lg bg-muted/30 min-h-[500px] flex items-center justify-center">
                 {imagePreview ? (
                   <img
                     src={imagePreview}
@@ -341,47 +337,57 @@ export default function Base64Page() {
             </Card>
 
             {/* Base64 数据 */}
-            <Card className="p-4">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="font-semibold">Base64 数据</h3>
-                <div className="flex gap-2">
-                  <span className="text-sm text-muted-foreground">
-                    {imageBase64.length} 字符
-                  </span>
-                  {imageBase64 && <CopyButton text={imageBase64} />}
+            <Card className="p-3">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <h3 className="font-semibold text-sm">Base64 数据</h3>
+                  <span className="text-xs text-muted-foreground">{imageBase64.length} 字符</span>
                 </div>
+                {imageBase64 && <CopyButton text={imageBase64} />}
               </div>
               <CodeEditor
                 value={imageBase64}
-                onChange={setTextInput}
+                onChange={setImageBase64}
                 placeholder="Base64 数据将显示在这里..."
-                readOnly
-                minHeight="400px"
-                maxHeight="600px"
+                minHeight="500px"
+                maxHeight="70vh"
               />
             </Card>
           </div>
         </TabsContent>
       </Tabs>
 
-      {/* 使用说明 */}
-      <Card className="p-6">
-        <h3 className="font-semibold mb-3">使用说明</h3>
-        <div className="space-y-2 text-sm text-muted-foreground">
-          <p><strong>文本编解码：</strong></p>
-          <p>• <strong>编码</strong>: 在左侧输入明文，点击"编码"按钮转换为Base64</p>
-          <p>• <strong>解码</strong>: 在右侧输入Base64，点击"解码"按钮还原为明文</p>
-          <p>• <strong>实时转换</strong>: 勾选后，左侧输入框内容变化时自动编码</p>
-          <p>• 支持中文和特殊字符</p>
-          
-          <p className="mt-4"><strong>图片处理：</strong></p>
-          <p>• <strong>选择图片</strong>: 上传本地图片并转换为 Base64</p>
-          <p>• <strong>从 Base64 加载</strong>: 将 Base64 数据转换为图片预览</p>
-          <p>• <strong>下载图片</strong>: 将 Base64 数据保存为图片文件</p>
-          <p>• 支持的图片格式: JPG, PNG, GIF, WebP 等</p>
-          <p>• 图片大小限制: 5MB</p>
-        </div>
-      </Card>
+      {/* 使用说明 - 可折叠 */}
+      <details className="group">
+        <summary className="cursor-pointer list-none">
+          <Card className="p-3 hover:bg-muted/30 transition-colors">
+            <div className="flex items-center justify-between">
+              <h3 className="font-semibold text-sm">使用说明</h3>
+              <span className="text-muted-foreground group-open:rotate-180 transition-transform">▼</span>
+            </div>
+          </Card>
+        </summary>
+        <Card className="p-4 mt-2">
+          <div className="grid md:grid-cols-2 gap-4 text-sm text-muted-foreground">
+            <div>
+              <p className="font-semibold text-foreground mb-2">文本编解码</p>
+              <p>• <strong>编码</strong>: 在左侧输入明文，点击"编码"按钮转换为Base64</p>
+              <p>• <strong>解码</strong>: 在右侧输入Base64，点击"解码"按钮还原为明文</p>
+              <p>• <strong>实时转换</strong>: 勾选后，左侧输入框内容变化时自动编码</p>
+              <p>• 支持中文和特殊字符</p>
+            </div>
+            
+            <div>
+              <p className="font-semibold text-foreground mb-2">图片处理</p>
+              <p>• <strong>选择图片</strong>: 上传本地图片并转换为 Base64</p>
+              <p>• <strong>从 Base64 加载</strong>: 将 Base64 数据转换为图片预览</p>
+              <p>• <strong>下载图片</strong>: 将 Base64 数据保存为图片文件</p>
+              <p>• 支持的图片格式: JPG, PNG, GIF, WebP 等</p>
+              <p>• 图片大小限制: 5MB</p>
+            </div>
+          </div>
+        </Card>
+      </details>
     </div>
   );
 }

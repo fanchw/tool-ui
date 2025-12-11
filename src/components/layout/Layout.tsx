@@ -20,7 +20,7 @@ export function Layout() {
           "hidden md:block border-r transition-all duration-300",
           sidebarCollapsed ? "w-16" : "w-64"
         )}>
-          <div className="sticky top-14 h-[calc(100vh-3.5rem)]">
+          <div className="sticky top-14 h-[calc(100vh-3.5rem)]" style={{ willChange: 'transform', transform: 'translateZ(0)' }}>
             <Sidebar
               collapsed={sidebarCollapsed}
               onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
@@ -50,7 +50,7 @@ export function Layout() {
         )}
 
         {/* Main Content */}
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto" style={{ contain: 'layout style paint' }}>
           <div className="container py-6">
             <Outlet />
           </div>
