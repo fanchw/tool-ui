@@ -12,6 +12,8 @@ import {
 } from '@/components/ui/dialog';
 import { MonacoEditor } from '@/components/common/MonacoEditor';
 import { CopyButton } from '@/components/common/CopyButton';
+import { PageHeader, Toolbar, EditorSection } from '@/components/common';
+import type { ToolbarButton } from '@/components/common';
 import { KeyGenerator } from '@/components/crypto/KeyGenerator';
 import { RsaKeyManager } from '@/components/crypto/RsaKeyManager';
 import {
@@ -292,20 +294,39 @@ export default function CryptoPage() {
     setRsaPlaintext('Hello, 这是一个RSA加密示例！');
   };
 
+  const aesToolbarButtons: ToolbarButton[] = [
+    { label: '生成密钥', icon: Key, onClick: () => setShowAesKeyGenerator(!showAesKeyGenerator), variant: 'outline' },
+    { label: '清空', icon: RotateCcw, onClick: handleClearAes, variant: 'ghost' },
+    { label: '示例', icon: Wand2, onClick: handleAesExample, variant: 'ghost' },
+  ];
+
+  const rsaToolbarButtons: ToolbarButton[] = [
+    { label: '密钥管理', icon: Key, onClick: () => setShowRsaKeyManager(!showRsaKeyManager), variant: 'outline' },
+    { label: '清空', icon: RotateCcw, onClick: handleClearRsa, variant: 'ghost' },
+    { label: '示例', icon: Wand2, onClick: handleRsaExample, variant: 'ghost' },
+  ];
+
+  const hashToolbarButtons: ToolbarButton[] = [
+    { label: '计算哈希', onClick: handleCalculateHash },
+    { label: '清空', icon: RotateCcw, onClick: handleClearHash, variant: 'ghost' },
+    { label: '示例', icon: Wand2, onClick: handleHashExample, variant: 'ghost' },
+  ];
+
+  const hmacToolbarButtons: ToolbarButton[] = [
+    { label: '计算 HMAC', onClick: handleCalculateHmac },
+    { label: '生成密钥', icon: Key, onClick: () => setShowHmacKeyGenerator(!showHmacKeyGenerator), variant: 'outline' },
+    { label: '清空', icon: RotateCcw, onClick: handleClearHmac, variant: 'ghost' },
+    { label: '示例', icon: Wand2, onClick: handleHmacExample, variant: 'ghost' },
+  ];
+
   return (
     <div className="space-y-4">
-      {/* 页面标题 - 紧凑版 */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Lock className="h-6 w-6" />
-            加密解密工具
-          </h1>
-          <p className="text-muted-foreground text-sm mt-1">
-            支持 AES、RSA、MD5、SHA 等多种加密算法
-          </p>
-        </div>
-      </div>
+      <PageHeader
+        icon={Lock}
+        title="加密解密工具"
+        description="支持 AES、RSA、MD5、SHA 等多种加密算法"
+        size="sm"
+      />
 
       {/* 标签页 */}
       <Tabs defaultValue="aes" className="w-full">
@@ -330,42 +351,20 @@ export default function CryptoPage() {
 
         {/* AES 加密解密 */}
         <TabsContent value="aes" className="space-y-3">
-          {/* 工具栏 - 紧凑版 */}
-          <Card className="p-3">
-            <div className="flex flex-wrap gap-2 items-center justify-between">
-              <div className="flex gap-2">
-                <Button
-                  onClick={() => setShowAesKeyGenerator(!showAesKeyGenerator)}
-                  variant="outline"
-                  size="sm"
-                  className="gap-1.5"
-                >
-                  <Key className="h-3.5 w-3.5" />
-                  生成密钥
-                </Button>
-                <Button onClick={handleClearAes} variant="ghost" size="sm" className="gap-1.5">
-                  <RotateCcw className="h-3.5 w-3.5" />
-                  清空
-                </Button>
-                <Button onClick={handleAesExample} variant="ghost" size="sm" className="gap-1.5">
-                  <Wand2 className="h-3.5 w-3.5" />
-                  示例
-                </Button>
-              </div>
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  id="liveConvertAes"
-                  checked={liveConvertAes}
-                  onChange={(e) => setLiveConvertAes(e.target.checked)}
-                  className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary"
-                />
-                <label htmlFor="liveConvertAes" className="text-sm cursor-pointer">
-                  实时转换
-                </label>
-              </div>
+          <Toolbar buttons={aesToolbarButtons} size="sm" padding="sm">
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="liveConvertAes"
+                checked={liveConvertAes}
+                onChange={(e) => setLiveConvertAes(e.target.checked)}
+                className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary"
+              />
+              <label htmlFor="liveConvertAes" className="text-sm cursor-pointer">
+                实时转换
+              </label>
             </div>
-          </Card>
+          </Toolbar>
 
           {/* AES密钥生成器 Dialog */}
           <Dialog open={showAesKeyGenerator} onOpenChange={setShowAesKeyGenerator}>
@@ -470,28 +469,7 @@ export default function CryptoPage() {
 
         {/* RSA 加密解密 */}
         <TabsContent value="rsa" className="space-y-3">
-          {/* 工具栏 - 紧凑版 */}
-          <Card className="p-3">
-            <div className="flex flex-wrap gap-2">
-              <Button
-                onClick={() => setShowRsaKeyManager(!showRsaKeyManager)}
-                variant="outline"
-                size="sm"
-                className="gap-1.5"
-              >
-                <Key className="h-3.5 w-3.5" />
-                密钥管理
-              </Button>
-              <Button onClick={handleClearRsa} variant="ghost" size="sm" className="gap-1.5">
-                <RotateCcw className="h-3.5 w-3.5" />
-                清空
-              </Button>
-              <Button onClick={handleRsaExample} variant="ghost" size="sm" className="gap-1.5">
-                <Wand2 className="h-3.5 w-3.5" />
-                示例
-              </Button>
-            </div>
-          </Card>
+          <Toolbar buttons={rsaToolbarButtons} size="sm" padding="sm" />
 
           {/* RSA密钥管理器 Dialog */}
           <Dialog open={showRsaKeyManager} onOpenChange={setShowRsaKeyManager}>
@@ -612,30 +590,9 @@ export default function CryptoPage() {
 
         {/* 哈希计算 */}
         <TabsContent value="hash" className="space-y-3">
-          {/* 工具栏 - 紧凑版 */}
-          <Card className="p-3">
-            <div className="flex flex-wrap gap-2">
-              <Button onClick={handleCalculateHash} size="sm" className="gap-1.5">
-                <Hash className="h-3.5 w-3.5" />
-                计算哈希
-              </Button>
-              <Button onClick={handleClearHash} variant="ghost" size="sm" className="gap-1.5">
-                <RotateCcw className="h-3.5 w-3.5" />
-                清空
-              </Button>
-              <Button onClick={handleHashExample} variant="ghost" size="sm" className="gap-1.5">
-                <Wand2 className="h-3.5 w-3.5" />
-                示例
-              </Button>
-            </div>
-          </Card>
+          <Toolbar buttons={hashToolbarButtons} size="sm" padding="sm" />
 
-          {/* 输入区 - 更大空间 */}
-          <Card className="p-3">
-            <div className="flex items-center gap-2 mb-2">
-              <h3 className="font-semibold text-sm">输入内容</h3>
-              <span className="text-xs text-muted-foreground">{hashInput.length} 字符</span>
-            </div>
+          <EditorSection title="输入内容" value={hashInput} size="sm" padding="sm">
             <MonacoEditor
               value={hashInput}
               onChange={setHashInput}
@@ -643,7 +600,7 @@ export default function CryptoPage() {
               minHeight="400px"
               maxHeight="60vh"
             />
-          </Card>
+          </EditorSection>
 
           {/* 哈希结果 - 紧凑版 */}
           {Object.keys(hashResults).length > 0 && (
@@ -668,32 +625,7 @@ export default function CryptoPage() {
 
         {/* HMAC */}
         <TabsContent value="hmac" className="space-y-3">
-          {/* 工具栏 - 紧凑版 */}
-          <Card className="p-3">
-            <div className="flex flex-wrap gap-2">
-              <Button onClick={handleCalculateHmac} size="sm" className="gap-1.5">
-                <Key className="h-3.5 w-3.5" />
-                计算 HMAC
-              </Button>
-              <Button
-                onClick={() => setShowHmacKeyGenerator(!showHmacKeyGenerator)}
-                variant="outline"
-                size="sm"
-                className="gap-1.5"
-              >
-                <Key className="h-3.5 w-3.5" />
-                生成密钥
-              </Button>
-              <Button onClick={handleClearHmac} variant="ghost" size="sm" className="gap-1.5">
-                <RotateCcw className="h-3.5 w-3.5" />
-                清空
-              </Button>
-              <Button onClick={handleHmacExample} variant="ghost" size="sm" className="gap-1.5">
-                <Wand2 className="h-3.5 w-3.5" />
-                示例
-              </Button>
-            </div>
-          </Card>
+          <Toolbar buttons={hmacToolbarButtons} size="sm" padding="sm" />
 
           {/* HMAC密钥生成器 Dialog */}
           <Dialog open={showHmacKeyGenerator} onOpenChange={setShowHmacKeyGenerator}>

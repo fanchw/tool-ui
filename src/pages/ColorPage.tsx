@@ -3,7 +3,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { CopyButton } from '@/components/common/CopyButton';
-import { PageHeader, Toolbar, UsageInstructions } from '@/components/common';
+import { PageHeader, Toolbar } from '@/components/common';
 import type { ToolbarButton } from '@/components/common';
 import { 
   Palette, 

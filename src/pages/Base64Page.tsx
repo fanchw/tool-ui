@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CodeEditor } from '@/components/common/CodeEditor';
 import { PageHeader, Toolbar, EditorSection, UsageInstructions } from '@/components/common';

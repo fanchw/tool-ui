@@ -4,8 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { CodeEditor } from '@/components/common/CodeEditor';
 import { CopyButton } from '@/components/common/CopyButton';
-import { PageHeader, Toolbar, EditorSection, UsageInstructions } from '@/components/common';
-import type { ToolbarButton } from '@/components/common';
+import { PageHeader } from '@/components/common';
 import { 
   Search, 
   RotateCcw,
