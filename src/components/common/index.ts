@@ -3,3 +3,8 @@ export { CopyButton } from './CopyButton';
 export { CodeEditor } from './CodeEditor';
 export { Loading, PageLoading, ButtonLoading } from './Loading';
 export { ErrorBoundary, ErrorFallback } from './ErrorBoundary';
+export { PageHeader } from './PageHeader';
+export { Toolbar } from './Toolbar';
+export type { ToolbarButton } from './Toolbar';
+export { EditorSection } from './EditorSection';
+export { UsageInstructions } from './UsageInstructions';
