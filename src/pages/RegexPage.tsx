@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { CodeEditor } from '@/components/common/CodeEditor';
 import { CopyButton } from '@/components/common/CopyButton';
+import { PageHeader, Toolbar, EditorSection, UsageInstructions } from '@/components/common';
+import type { ToolbarButton } from '@/components/common';
 import { 
   Search, 
   RotateCcw,
@@ -206,16 +208,12 @@ export default function RegexPage() {
 
   return (
     <div className="space-y-6">
-      {/* 页面标题 */}
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Search className="h-8 w-8" />
-          正则表达式
-        </h1>
-        <p className="text-muted-foreground mt-2">
-          正则表达式测试工具，支持匹配高亮和替换功能
-        </p>
-      </div>
+      <PageHeader
+        icon={Search}
+        title="正则表达式"
+        description="正则表达式测试工具，支持匹配高亮和替换功能"
+        size="lg"
+      />
 
       {/* 正则表达式输入 */}
       <Card className="p-4">
