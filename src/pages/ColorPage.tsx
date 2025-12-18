@@ -3,6 +3,8 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { CopyButton } from '@/components/common/CopyButton';
+import { PageHeader, Toolbar } from '@/components/common';
+import type { ToolbarButton } from '@/components/common';
 import { 
   Palette, 
   RotateCcw,
@@ -233,18 +235,19 @@ export default function ColorPage() {
     { name: '粉色', hex: '#ec4899' },
   ];
 
+  const toolbarButtons: ToolbarButton[] = [
+    { label: '随机颜色', icon: Wand2, onClick: handleRandom },
+    { label: '清空', icon: RotateCcw, onClick: handleClear, variant: 'ghost' },
+  ];
+
   return (
     <div className="space-y-6">
-      {/* 页面标题 */}
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Palette className="h-8 w-8" />
-          颜色转换
-        </h1>
-        <p className="text-muted-foreground mt-2">
-          HEX、RGB、HSL 颜色格式互转工具
-        </p>
-      </div>
+      <PageHeader
+        icon={Palette}
+        title="颜色转换"
+        description="HEX、RGB、HSL 颜色格式互转工具"
+        size="lg"
+      />
 
       {/* 颜色预览 */}
       <Card className="p-6">
@@ -260,19 +263,7 @@ export default function ColorPage() {
         </div>
       </Card>
 
-      {/* 工具栏 */}
-      <Card className="p-4">
-        <div className="flex flex-wrap gap-2">
-          <Button onClick={handleRandom} className="gap-2">
-            <Wand2 className="h-4 w-4" />
-            随机颜色
-          </Button>
-          <Button onClick={handleClear} variant="ghost" className="gap-2">
-            <RotateCcw className="h-4 w-4" />
-            清空
-          </Button>
-        </div>
-      </Card>
+      <Toolbar buttons={toolbarButtons} size="md" padding="md" />
 
       {/* 颜色格式转换 */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

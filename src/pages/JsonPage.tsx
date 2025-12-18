@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { MonacoEditor } from '@/components/common/MonacoEditor';
-import { CopyButton } from '@/components/common/CopyButton';
+import { PageHeader, Toolbar, EditorSection, UsageInstructions } from '@/components/common';
+import type { ToolbarButton } from '@/components/common';
 import { 
   FileJson, 
   Minimize2, 
@@ -139,64 +139,38 @@ export default function JsonPage() {
     setIsValid(null);
   };
 
+  const toolbarButtons: ToolbarButton[] = [
+    { label: '格式化', icon: Maximize2, onClick: handleFormat },
+    { label: '压缩', icon: Minimize2, onClick: handleCompress, variant: 'secondary' },
+    { label: '验证', icon: CheckCircle2, onClick: handleValidate, variant: 'outline' },
+    { label: '转义', onClick: handleEscape, variant: 'outline' },
+    { label: '去转义', onClick: handleUnescape, variant: 'outline' },
+    { label: '清空', icon: RotateCcw, onClick: handleClear, variant: 'ghost' },
+    { label: '示例', icon: Wand2, onClick: handleExample, variant: 'ghost' },
+  ];
+
   return (
     <div className="space-y-4">
-      {/* 页面标题 - 紧凑版 */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            <FileJson className="h-6 w-6" />
-            JSON 工具
-          </h1>
-          <p className="text-muted-foreground text-sm mt-1">
-            JSON 格式化、压缩、验证、转义工具
-          </p>
-        </div>
-      </div>
+      <PageHeader
+        icon={FileJson}
+        title="JSON 工具"
+        description="JSON 格式化、压缩、验证、转义工具"
+        size="sm"
+      />
 
-      {/* 工具栏 - 紧凑版 */}
-      <Card className="p-3">
-        <div className="flex flex-wrap gap-2 items-center">
-          <Button onClick={handleFormat} size="sm" className="gap-1.5">
-            <Maximize2 className="h-3.5 w-3.5" />
-            格式化
-          </Button>
-          <Button onClick={handleCompress} variant="secondary" size="sm" className="gap-1.5">
-            <Minimize2 className="h-3.5 w-3.5" />
-            压缩
-          </Button>
-          <Button onClick={handleValidate} variant="outline" size="sm" className="gap-1.5">
-            <CheckCircle2 className="h-3.5 w-3.5" />
-            验证
-          </Button>
-          <Button onClick={handleEscape} variant="outline" size="sm" className="gap-1.5">
-            转义
-          </Button>
-          <Button onClick={handleUnescape} variant="outline" size="sm" className="gap-1.5">
-            去转义
-          </Button>
-          <Button onClick={handleClear} variant="ghost" size="sm" className="gap-1.5">
-            <RotateCcw className="h-3.5 w-3.5" />
-            清空
-          </Button>
-          <Button onClick={handleExample} variant="ghost" size="sm" className="gap-1.5">
-            <Wand2 className="h-3.5 w-3.5" />
-            示例
-          </Button>
-          
-          <div className="ml-auto flex items-center gap-2">
-            <label className="text-sm text-muted-foreground">缩进:</label>
-            <Input
-              type="number"
-              min="0"
-              max="8"
-              value={indent}
-              onChange={(e) => setIndent(e.target.value)}
-              className="w-16 h-8"
-            />
-          </div>
+      <Toolbar buttons={toolbarButtons} size="sm" padding="sm">
+        <div className="ml-auto flex items-center gap-2">
+          <label className="text-sm text-muted-foreground">缩进:</label>
+          <Input
+            type="number"
+            min="0"
+            max="8"
+            value={indent}
+            onChange={(e) => setIndent(e.target.value)}
+            className="w-16 h-8"
+          />
         </div>
-      </Card>
+      </Toolbar>
 
       {/* 验证状态 - 紧凑版 */}
       {isValid !== null && (
@@ -235,16 +209,7 @@ export default function JsonPage() {
 
       {/* 输入输出区域 - 优化空间 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-        {/* 输入区 */}
-        <Card className="p-3">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
-              <h3 className="font-semibold text-sm">输入</h3>
-              <span className="text-xs text-muted-foreground">
-                {input.length} 字符
-              </span>
-            </div>
-          </div>
+        <EditorSection title="输入" value={input} size="sm" padding="sm">
           <MonacoEditor
             value={input}
             onChange={setInput}
@@ -253,19 +218,9 @@ export default function JsonPage() {
             minHeight="500px"
             maxHeight="70vh"
           />
-        </Card>
+        </EditorSection>
 
-        {/* 输出区 */}
-        <Card className="p-3">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
-              <h3 className="font-semibold text-sm">输出</h3>
-              <span className="text-xs text-muted-foreground">
-                {output.length} 字符
-              </span>
-            </div>
-            {output && <CopyButton text={output} />}
-          </div>
+        <EditorSection title="输出" value={output} showCopy size="sm" padding="sm">
           <MonacoEditor
             value={output}
             onChange={setOutput}
@@ -274,48 +229,37 @@ export default function JsonPage() {
             minHeight="500px"
             maxHeight="70vh"
           />
-        </Card>
+        </EditorSection>
       </div>
 
-      {/* 使用说明 - 可折叠 */}
-      <details className="group">
-        <summary className="cursor-pointer list-none">
-          <Card className="p-3 hover:bg-muted/30 transition-colors">
-            <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-sm">使用说明</h3>
-              <span className="text-muted-foreground group-open:rotate-180 transition-transform">▼</span>
-            </div>
-          </Card>
-        </summary>
-        <Card className="p-4 mt-2">
-          <div className="grid md:grid-cols-2 gap-4 text-sm text-muted-foreground">
-            <div>
-              <p className="font-semibold text-foreground mb-1">格式化</p>
-              <p>将压缩的 JSON 格式化为易读的格式</p>
-            </div>
-            <div>
-              <p className="font-semibold text-foreground mb-1">压缩</p>
-              <p>移除 JSON 中的空格和换行，减小体积</p>
-            </div>
-            <div>
-              <p className="font-semibold text-foreground mb-1">验证</p>
-              <p>检查 JSON 格式是否正确</p>
-            </div>
-            <div>
-              <p className="font-semibold text-foreground mb-1">转义</p>
-              <p>将 JSON 转换为转义字符串格式</p>
-            </div>
-            <div>
-              <p className="font-semibold text-foreground mb-1">去转义</p>
-              <p>将转义的 JSON 字符串还原为正常格式</p>
-            </div>
-            <div>
-              <p className="font-semibold text-foreground mb-1">缩进</p>
-              <p>设置格式化时的缩进空格数（0-8）</p>
-            </div>
+      <UsageInstructions collapsible>
+        <div className="grid md:grid-cols-2 gap-4 text-sm text-muted-foreground">
+          <div>
+            <p className="font-semibold text-foreground mb-1">格式化</p>
+            <p>将压缩的 JSON 格式化为易读的格式</p>
           </div>
-        </Card>
-      </details>
+          <div>
+            <p className="font-semibold text-foreground mb-1">压缩</p>
+            <p>移除 JSON 中的空格和换行，减小体积</p>
+          </div>
+          <div>
+            <p className="font-semibold text-foreground mb-1">验证</p>
+            <p>检查 JSON 格式是否正确</p>
+          </div>
+          <div>
+            <p className="font-semibold text-foreground mb-1">转义</p>
+            <p>将 JSON 转换为转义字符串格式</p>
+          </div>
+          <div>
+            <p className="font-semibold text-foreground mb-1">去转义</p>
+            <p>将转义的 JSON 字符串还原为正常格式</p>
+          </div>
+          <div>
+            <p className="font-semibold text-foreground mb-1">缩进</p>
+            <p>设置格式化时的缩进空格数（0-8）</p>
+          </div>
+        </div>
+      </UsageInstructions>
     </div>
   );
 }

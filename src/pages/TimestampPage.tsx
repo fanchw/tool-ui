@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CopyButton } from '@/components/common/CopyButton';
+import { PageHeader } from '@/components/common';
 import { 
   Clock, 
   Calendar,
@@ -160,16 +161,12 @@ export default function TimestampPage() {
 
   return (
     <div className="space-y-6">
-      {/* 页面标题 */}
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Clock className="h-8 w-8" />
-          时间戳转换
-        </h1>
-        <p className="text-muted-foreground mt-2">
-          时间戳与日期时间互转工具
-        </p>
-      </div>
+      <PageHeader
+        icon={Clock}
+        title="时间戳转换"
+        description="时间戳与日期时间互转工具"
+        size="lg"
+      />
 
       {/* 当前时间 */}
       <Card className="p-6">
