@@ -5,6 +5,8 @@ import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CodeEditor } from '@/components/common/CodeEditor';
 import { CopyButton } from '@/components/common/CopyButton';
+import { PageHeader, Toolbar, EditorSection, UsageInstructions } from '@/components/common';
+import type { ToolbarButton } from '@/components/common';
 import { 
   Link2, 
   Code2,
@@ -179,18 +181,33 @@ export default function UrlPage() {
     return JSON.stringify(obj, null, 2);
   };
 
+  const encodeToolbarButtons: ToolbarButton[] = [
+    { label: '编码', onClick: handleEncode },
+    { label: '解码', onClick: handleDecode, variant: 'secondary' },
+    { label: '清空', icon: RotateCcw, onClick: handleClearEncode, variant: 'ghost' },
+    { label: '示例', icon: Wand2, onClick: handleEncodeExample, variant: 'ghost' },
+  ];
+
+  const parseToolbarButtons: ToolbarButton[] = [
+    { label: '解析', onClick: handleParseUrl },
+    { label: '清空', icon: RotateCcw, onClick: handleClearParse, variant: 'ghost' },
+    { label: '示例', icon: Wand2, onClick: handleParseExample, variant: 'ghost' },
+  ];
+
+  const buildToolbarButtons: ToolbarButton[] = [
+    { label: '构建 URL', onClick: handleBuildUrl },
+    { label: '清空', icon: RotateCcw, onClick: handleClearBuild, variant: 'ghost' },
+    { label: '示例', icon: Wand2, onClick: handleBuildExample, variant: 'ghost' },
+  ];
+
   return (
     <div className="space-y-6">
-      {/* 页面标题 */}
-      <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Link2 className="h-8 w-8" />
-          URL 工具
-        </h1>
-        <p className="text-muted-foreground mt-2">
-          URL 编码解码、参数解析、URL 构建工具
-        </p>
-      </div>
+      <PageHeader
+        icon={Link2}
+        title="URL 工具"
+        description="URL 编码解码、参数解析、URL 构建工具"
+        size="lg"
+      />
 
       {/* 标签页 */}
       <Tabs defaultValue="encode" className="w-full">
@@ -211,36 +228,11 @@ export default function UrlPage() {
 
         {/* 编码解码 */}
         <TabsContent value="encode" className="space-y-4">
-          {/* 工具栏 */}
-          <Card className="p-4">
-            <div className="flex flex-wrap gap-2">
-              <Button onClick={handleEncode} className="gap-2">
-                编码
-              </Button>
-              <Button onClick={handleDecode} variant="secondary" className="gap-2">
-                解码
-              </Button>
-              <Button onClick={handleClearEncode} variant="ghost" className="gap-2">
-                <RotateCcw className="h-4 w-4" />
-                清空
-              </Button>
-              <Button onClick={handleEncodeExample} variant="ghost" className="gap-2">
-                <Wand2 className="h-4 w-4" />
-                示例
-              </Button>
-            </div>
-          </Card>
+          <Toolbar buttons={encodeToolbarButtons} size="md" padding="md" />
 
           {/* 输入输出区域 */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {/* 输入区 */}
-            <Card className="p-4">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="font-semibold">输入</h3>
-                <span className="text-sm text-muted-foreground">
-                  {encodeInput.length} 字符
-                </span>
-              </div>
+            <EditorSection title="输入" value={encodeInput} size="md" padding="md">
               <CodeEditor
                 value={encodeInput}
                 onChange={setEncodeInput}
@@ -248,19 +240,9 @@ export default function UrlPage() {
                 minHeight="400px"
                 maxHeight="600px"
               />
-            </Card>
+            </EditorSection>
 
-            {/* 输出区 */}
-            <Card className="p-4">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="font-semibold">输出</h3>
-                <div className="flex gap-2">
-                  <span className="text-sm text-muted-foreground">
-                    {encodeOutput.length} 字符
-                  </span>
-                  {encodeOutput && <CopyButton text={encodeOutput} />}
-                </div>
-              </div>
+            <EditorSection title="输出" value={encodeOutput} showCopy size="md" padding="md">
               <CodeEditor
                 value={encodeOutput}
                 onChange={setEncodeOutput}
@@ -269,28 +251,13 @@ export default function UrlPage() {
                 minHeight="400px"
                 maxHeight="600px"
               />
-            </Card>
+            </EditorSection>
           </div>
         </TabsContent>
 
         {/* 参数解析 */}
         <TabsContent value="parse" className="space-y-4">
-          {/* 工具栏 */}
-          <Card className="p-4">
-            <div className="flex flex-wrap gap-2">
-              <Button onClick={handleParseUrl} className="gap-2">
-                解析
-              </Button>
-              <Button onClick={handleClearParse} variant="ghost" className="gap-2">
-                <RotateCcw className="h-4 w-4" />
-                清空
-              </Button>
-              <Button onClick={handleParseExample} variant="ghost" className="gap-2">
-                <Wand2 className="h-4 w-4" />
-                示例
-              </Button>
-            </div>
-          </Card>
+          <Toolbar buttons={parseToolbarButtons} size="md" padding="md" />
 
           {/* URL 输入 */}
           <Card className="p-4">
@@ -330,22 +297,7 @@ export default function UrlPage() {
 
         {/* URL 构建 */}
         <TabsContent value="build" className="space-y-4">
-          {/* 工具栏 */}
-          <Card className="p-4">
-            <div className="flex flex-wrap gap-2">
-              <Button onClick={handleBuildUrl} className="gap-2">
-                构建 URL
-              </Button>
-              <Button onClick={handleClearBuild} variant="ghost" className="gap-2">
-                <RotateCcw className="h-4 w-4" />
-                清空
-              </Button>
-              <Button onClick={handleBuildExample} variant="ghost" className="gap-2">
-                <Wand2 className="h-4 w-4" />
-                示例
-              </Button>
-            </div>
-          </Card>
+          <Toolbar buttons={buildToolbarButtons} size="md" padding="md" />
 
           {/* 基础 URL */}
           <Card className="p-4">
@@ -410,9 +362,7 @@ export default function UrlPage() {
         </TabsContent>
       </Tabs>
 
-      {/* 使用说明 */}
-      <Card className="p-6">
-        <h3 className="font-semibold mb-3">使用说明</h3>
+      <UsageInstructions collapsible={false}>
         <div className="space-y-2 text-sm text-muted-foreground">
           <p><strong>编码解码：</strong></p>
           <p>• <strong>编码</strong>: 将 URL 中的特殊字符转换为百分号编码</p>
@@ -428,7 +378,7 @@ export default function UrlPage() {
           <p>• 添加多个查询参数</p>
           <p>• 自动生成完整的 URL</p>
         </div>
-      </Card>
+      </UsageInstructions>
     </div>
   );
 }
